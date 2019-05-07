@@ -1,14 +1,18 @@
 // TODO: FEN
 // TODO: PGN
-// TODO: delegate for the interfaces
-
 const UniversalChessInterface = require('./UCI');
 
+
 function Maria() {
+	this.name = 'MariaChess';
+	this.version = '0.0.1';
+	this.author = 'Christian Klihm';
+	this.bestmove = null;
+	this.ponder = null;
 	this.ui = new UniversalChessInterface(this);
 }
 
-Maria.prototype.run = function() {
+Maria.prototype.start = function() {
 	this.ui.open();
 }
 
@@ -18,6 +22,5 @@ Maria.prototype.quit = function() {
 
 	process.exit(0);
 }
-
 
 module.exports = Maria;

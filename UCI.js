@@ -1,10 +1,12 @@
 const readline = require('readline');
 const UCICommand = require('./UCICommand');
+const UCIResponse = require('./UCIResponse');
 
 
 function UniversalChessInterface(engine) {
 	this.engine = engine;
 	this.command = new UCICommand(this.engine);
+	this.response = new UCIResponse(this.engine);
 	this.readlineInterface = null;
 }
 
@@ -41,6 +43,5 @@ UniversalChessInterface.prototype.process = function(input) {
 		console.error(e);
 	}
 }
-
 
 module.exports = UniversalChessInterface;

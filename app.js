@@ -2,5 +2,4 @@
 
 const Maria = require('./maria');
 
-const maria = new Maria();
-maria.run();
+new Maria().start();

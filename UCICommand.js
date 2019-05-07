@@ -3,11 +3,12 @@ function UCICommand(engine) {
 }
 
 UCICommand.prototype.uci = function(data) {
-	console.log(`uci: '${data}', received`);
+	this.engine.ui.response.id();
 }
 
 UCICommand.prototype.isready = function(data) {
-	console.log(`isready: '${data}', received`);
+	// do some engineis stuff
+	this.engine.ui.response.readyok();
 }
 
 UCICommand.prototype.setoption = function(data) {
@@ -17,6 +18,5 @@ UCICommand.prototype.setoption = function(data) {
 UCICommand.prototype.quit = function() {
 	this.engine.quit();
 }
-
 
 module.exports = UCICommand;
