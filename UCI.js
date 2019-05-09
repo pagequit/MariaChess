@@ -17,22 +17,26 @@ UniversalChessInterface.prototype.open = function() {
 	});
 
 	this.readlineInterface.on('line', this.process.bind(this));
-}
+};
 
 UniversalChessInterface.prototype.close = function() {
 	this.readlineInterface.close();
-}
+};
 
 UniversalChessInterface.prototype.execute = function(request) {
 	this.command[request.command](request.data);
-}
+};
 
 UniversalChessInterface.prototype.parse = function(input) {
+	const regex = /(\S+)/g;
+	const match = input.match(regex);
+	const command = match.shift();
+
 	return {
-		command: input,
-		data: input,
-	}
-}
+		command: command,
+		data: match
+	};
+};
 
 UniversalChessInterface.prototype.process = function(input) {
 	const request = this.parse(input);
@@ -42,6 +46,6 @@ UniversalChessInterface.prototype.process = function(input) {
 	catch (e) {
 		console.error(e);
 	}
-}
+};
 
 module.exports = UniversalChessInterface;
