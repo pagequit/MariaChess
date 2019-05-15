@@ -8,6 +8,7 @@ UCICommand.prototype.uci = function() {
 
 UCICommand.prototype.ucinewgame = function() {
 	// do some engineis stuff
+	this.engine.initNewGame();
 	this.engine.ui.response.readyok();
 };
 

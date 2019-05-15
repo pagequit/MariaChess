@@ -28,8 +28,7 @@ UniversalChessInterface.prototype.execute = function(request) {
 };
 
 UniversalChessInterface.prototype.parse = function(input) {
-	const regex = /(\S+)/g;
-	const match = input.match(regex);
+	const match = input.match(/(\S+)/g);
 	const command = match.shift();
 
 	return {

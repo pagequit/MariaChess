@@ -21,45 +21,7 @@ TODO: PGN
 TODO: CQL ???
 */
 const UniversalChessInterface = require('./UCI');
-
-
-function Board(FENString) {
-	this.startpos = FENString || 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1'; // ???
-	//this.piecePlacement = ???
-	this.activeColor = null;
-	this.castlingAvailability = null;
-	this.enPassant = null;
-	this.halfmoveClock = null;
-	this.fullmoveNumber = null;
-
-	this.squares = [
-		[null, null, null, null, null, null, null, null],
-		[null, null, null, null, null, null, null, null],
-		[null, null, null, null, null, null, null, null],
-		[null, null, null, null, null, null, null, null],
-		[null, null, null, null, null, null, null, null],
-		[null, null, null, null, null, null, null, null],
-		[null, null, null, null, null, null, null, null],
-		[null, null, null, null, null, null, null, null],
-	];
-}
-
-Board.prototype.parseFEN = function(FENString) {
-	let FENArray = FENString.split(' ', 6);
-
-	if ( FENArray.lenght !== 6 ) {
-		throw {
-			name: 'FEN exception',
-			message: 'Invalid FEN string',
-			toString: () => `${this.name}: ${this.message}`
-		};
-	}
-	return FENArray;
-};
-
-Board.prototype.init = function() {
-	this.parseFEN(this.startpos) // ???
-}
+const Board = require('./board');
 
 function Maria() {
 	this.name = 'MariaChess';
@@ -68,11 +30,14 @@ function Maria() {
 	this.bestmove = null;
 	this.ponder = null;
 	this.ui = new UniversalChessInterface(this);
+	this.board = new Board();
 }
 
 Maria.prototype.initNewGame = function() {
-
-}
+	//console.log(this.board);
+	this.board.init();
+	console.log(this.board);
+};
 
 Maria.prototype.start = function() {
 	this.ui.open();
