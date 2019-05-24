@@ -20,6 +20,20 @@ TODO: PGN
 
 TODO: CQL ???
 */
+
+function MoveGenerator(engine) {
+	this.engine = engine;
+}
+
+MoveGenerator.prototype.generate = function(side) {
+	let pieces = [];
+	this.engine.board.eachSquare(square => {
+		if ( square.piece.color === side ) {
+			pieces.push(square.piece);  // oder so...
+		}
+	});
+};
+
 const UniversalChessInterface = require('./UCI');
 const Board = require('./board');
 
@@ -30,13 +44,16 @@ function Maria() {
 	this.bestmove = null;
 	this.ponder = null;
 	this.ui = new UniversalChessInterface(this);
-	this.board = new Board();
+	this.board = new Board(this);
+	this.moveGenerator = null;
 }
 
 Maria.prototype.initNewGame = function() {
-	//console.log(this.board);
 	this.board.init();
-	console.log(this.board);
+};
+
+Maria.prototype.response = function() {
+	this.ui.response.info();
 };
 
 Maria.prototype.start = function() {

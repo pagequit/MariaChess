@@ -7,14 +7,19 @@ UCICommand.prototype.uci = function() {
 };
 
 UCICommand.prototype.ucinewgame = function() {
-	// do some engineis stuff
 	this.engine.initNewGame();
-	this.engine.ui.response.readyok();
 };
 
 UCICommand.prototype.isready = function() {
-	// do some engineis stuff
 	this.engine.ui.response.readyok();
+};
+
+UCICommand.prototype.position = function(data) {
+	this.engine.board.set(data);
+};
+
+UCICommand.prototype.go = function() {
+	this.engine.ui.response.bestmove();
 };
 
 UCICommand.prototype.setoption = function(data) {

@@ -1,3 +1,4 @@
+const fs = require('fs');
 const readline = require('readline');
 const UCICommand = require('./UCICommand');
 const UCIResponse = require('./UCIResponse');
@@ -27,6 +28,14 @@ UniversalChessInterface.prototype.execute = function(request) {
 	this.command[request.command](request.data);
 };
 
+UniversalChessInterface.prototype.log = function(data) {
+	fs.appendFile('log', `${data}\n`, (err) => {
+		if (err) {
+			throw err;
+		}
+	});
+};
+
 UniversalChessInterface.prototype.parse = function(input) {
 	const match = input.match(/(\S+)/g);
 	const command = match.shift();
@@ -38,12 +47,13 @@ UniversalChessInterface.prototype.parse = function(input) {
 };
 
 UniversalChessInterface.prototype.process = function(input) {
+	this.log(input);
 	const request = this.parse(input);
 	try {
 		this.execute(request);
 	}
-	catch (e) {
-		console.error(e);
+	catch (err) {
+		this.log(err);
 	}
 };
 
