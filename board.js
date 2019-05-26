@@ -5,8 +5,18 @@ const colorCode = {
 };
 
 Board.prototype.pieceFactory = {
-	p: square => new Pawn(square,'b'),
 	P: square => new Pawn(square,'w'),
+	p: square => new Pawn(square,'b'),
+	N: square => new Knight(square,'w'),
+	n: square => new Knight(square,'b'),
+	B: square => new Bishop(square,'b'),
+	b: square => new Bishop(square,'w'),
+	R: square => new Rook(square,'b'),
+	r: square => new Rook(square,'w'),
+	Q: square => new Queen(square,'b'),
+	q: square => new Queen(square,'w'),
+	K: square => new King(square,'b'),
+	k: square => new King(square,'w'),
 };
 
 class Piece {
@@ -14,17 +24,51 @@ class Piece {
 		this.square = square;
 		this.color = color;
 		this.symbol = symbol;
+		this.nettoValue = 0;
 	}
 }
 
 class Pawn extends Piece {
 	constructor(square, color) {
 		super(square, color);
-		this.symbol = String.fromCharCode('P'.charCodeAt(0) - colorCode[this.color]);
-	}
 
-	getMoves() {
-		this.square.board.enPassant;
+		this.symbol = String.fromCharCode('P'.charCodeAt(0) - colorCode[this.color]);
+		this.nettoValue = 1;
+	}
+}
+
+class Knight extends Piece {
+	constructor(square, color) {
+		super(square, color);
+		this.symbol = String.fromCharCode('N'.charCodeAt(0) - colorCode[this.color]);
+	}
+}
+
+class Bishop extends Piece {
+	constructor(square, color) {
+		super(square, color);
+		this.symbol = String.fromCharCode('B'.charCodeAt(0) - colorCode[this.color]);
+	}
+}
+
+class Rook extends Piece {
+	constructor(square, color) {
+		super(square, color);
+		this.symbol = String.fromCharCode('R'.charCodeAt(0) - colorCode[this.color]);
+	}
+}
+
+class Queen extends Piece {
+	constructor(square, color) {
+		super(square, color);
+		this.symbol = String.fromCharCode('Q'.charCodeAt(0) - colorCode[this.color]);
+	}
+}
+
+class King extends Piece {
+	constructor(square, color) {
+		super(square, color);
+		this.symbol = String.fromCharCode('K'.charCodeAt(0) - colorCode[this.color]);
 	}
 }
 
@@ -49,7 +93,7 @@ function Board(engine) {
 	};
 
 	this.eachCoordinate(coordinate => {
-		this[coordinate] = new Square(coordinate);
+		this[coordinate] = new Square(this, coordinate);
 	});
 }
 
