@@ -46,8 +46,7 @@ function Maria() {
 	this.ui = new UniversalChessInterface(this);
 	this.board = new Board(this);
 	this.moveGenerator = null;
-
-	this.initNewGame();
+	this.isReady = false;
 }
 
 Maria.prototype.initNewGame = function() {
