@@ -4,11 +4,38 @@ class Piece {
 		this.color = color;
 		this.symbol = symbol;
 	}
+
+	get possibleMoves() {
+		return 'foo';
+	}
 }
 
 class Pawn extends Piece {
 	constructor(square, color, symbol) {
 		super(square, color, symbol);
+	}
+
+	// this function is ugly as ... u know ugly things look like
+	get possibleMoves() {
+		let possibleMoves = [];
+
+		if ( this.square.board.enPassant ) {
+			possibleMoves.push(this.square.board.enPassant);
+		}
+
+		if ( this.square.up && (this.square.up.piece === null) ) {
+			possibleMoves.push(this.square.up);
+		}
+
+		if ( this.square.upRight && (this.square.upRight.piece && this.square.upRight.piece.color !== this.color) ) {
+			possibleMoves.push(this.square.upRight);
+		}
+
+		if ( this.square.upLeft && (this.square.upLeft.piece && this.square.upLeft.piece.color !== this.color) ) {
+			possibleMoves.push(this.square.upLeft);
+		}
+
+		return possibleMoves;
 	}
 }
 
@@ -27,6 +54,25 @@ class Bishop extends Piece {
 class Rook extends Piece {
 	constructor(square, color, symbol) {
 		super(square, color, symbol);
+	}
+
+	// this function is also ugly as ugly things look like
+	get possibleMoves() {
+		let possibleMoves = [];
+
+		let currentUp = this.square.up;
+		while ( currentUp != undefined ) {
+			possibleMoves.push(currentUp);
+			currentUp = currentUp.up;
+		}
+
+		let currentRight = this.square.right;
+		while ( currentRight != undefined ) {
+			possibleMoves.push(currentRight);
+			currentRight = currentRight.right;
+		}
+
+		return possibleMoves;
 	}
 }
 
@@ -77,6 +123,58 @@ class Square {
 		this.board = board;
 		this.coordinate = coordinate;
 		this.piece = null;
+		this.file = coordinate[0];
+		this.rank = coordinate[1];
+	}
+
+	//getAdjacentSquare() {}
+
+	// what happend if there is no square we looking for, while chaining?
+	get up() {
+		let index = this.board.ranks.indexOf(this.rank);
+		let upAdjacentSquare = this.board[this.file + this.board.ranks[index + 1]];
+
+		return upAdjacentSquare;
+
+		// experimentel
+		// this.board.ranks[this.rank];
+	}
+
+	get right() {
+		let index = this.board.files.indexOf(this.file);
+		let rightAdjacentSquare = this.board[this.board.files[index + 1] + this.rank];
+
+		return rightAdjacentSquare;
+	}
+
+	get down() {
+		let index = this.board.ranks.indexOf(this.rank);
+		let downAdjacentSquare = this.board[this.file + this.board.ranks[index - 1]];
+
+		return downAdjacentSquare;
+	}
+
+	get left() {
+		let index = this.board.files.indexOf(this.file);
+		let leftAdjacentSquare = this.board[this.board.files[index - 1] + this.rank];
+
+		return leftAdjacentSquare;
+	}
+
+	get upRight() {
+		return this.up ? this.up.right : undefined;
+	}
+
+	get upLeft() {
+		return this.up ? this.up.left : undefined;
+	}
+
+	get downRight() {
+		return this.down ? this.down.right : undefined;
+	}
+
+	get downLeft() {
+		return this.down ? this.down.left : undefined;
 	}
 }
 
@@ -86,6 +184,20 @@ class Board {
 		this.engine = engine;
 		this.files = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
 		this.ranks = ['1', '2', '3', '4', '5', '6', '7', '8'];
+		this.file = {};
+		this.rank = {};
+		/*
+		TODO: try something like this:
+			this.files = {
+				a: [],
+				b: [],
+				c: [],
+				d: [],
+				e: [],
+				f: [],
+				g: [],
+			}
+		*/
 		this.activeColor = null;
 		this.castlingAvailability = null;
 		this.enPassant = null;
@@ -98,22 +210,37 @@ class Board {
 		};
 
 		this.squares = [];
+
 		this.eachCoordinate(coordinate => {
 			this[coordinate] = new Square(this, coordinate);
+			this.squares.push(this[coordinate]);
+		});
+
+		// fill the file property
+		this.files.forEach(file => {
+			this.file[file] = this.squares.reduce((accumulator, square) => {
+				if ( square.file === file ) {
+					accumulator.push(square);
+				}
+
+				return accumulator;
+			}, []);
+		});
+
+		// fill the rank property
+		this.ranks.forEach(rank => {
+			this.rank[rank] = this.squares.reduce((accumulator, square) => {
+				if ( square.rank === rank ) {
+					accumulator.push(square);
+				}
+
+				return accumulator;
+			}, []);
 		});
 
 		this.pieceFactory = new PieceFactory(this);
 	}
 
-	/*
-	eachSquare(callback) {
-		for ( let f = 0; f < this.files.length; f++ ) {
-			for ( let r = 0; r < this.ranks.length; r++ ) {
-				callback(this.squares[f][r]);
-			}
-		}
-	}
-	*/
 
 	placePieces(FENPiecePlacement) {
 		let entries = FENPiecePlacement.match(/\w/g);
@@ -126,7 +253,7 @@ class Board {
 			}
 			else {
 				this[coordinate].piece = this.pieceFactory.createPiece(entries[index], coordinate);
-				this.pieces[this[coordinate].piece.color] = this[coordinate].piece;
+				this.pieces[this[coordinate].piece.color].push(this[coordinate].piece);
 				index++;
 			}
 		});
@@ -161,7 +288,7 @@ class Board {
 
 		this.fullmoveNumber = parseInt(board.fullmoveNumber);
 		this.halfmoveClock = parseInt(board.halfmoveClock);
-		this.enPassant = board.enPassant;
+		this.enPassant = board.enPassant === '-' ? null : this[board.enPassant];
 		this.castlingAvailability = board.castlingAvailability;
 		this.activeColor = board.activeColor;
 
@@ -173,6 +300,17 @@ class Board {
 class MoveGenerator {
 	constructor(board) {
 		this.board = board;
+	}
+
+	getMoveList(color) {
+		let list = [];
+		this.board.pieces[color].forEach(piece => {
+			list.push({
+				[piece.symbol]: piece.possibleMoves
+			});
+		});
+
+		return list;
 	}
 }
 
@@ -187,6 +325,8 @@ class Engine {
 
 	init() {
 		this.board.init();
+		let list = this.moveGenerator.getMoveList(this.board.activeColor);
+		list;
 	}
 }
 
