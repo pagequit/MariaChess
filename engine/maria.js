@@ -186,18 +186,29 @@ class Board {
 		this.ranks = ['1', '2', '3', '4', '5', '6', '7', '8'];
 		this.file = {};
 		this.rank = {};
-		/*
-		TODO: try something like this:
-			this.files = {
-				a: [],
-				b: [],
-				c: [],
-				d: [],
-				e: [],
-				f: [],
-				g: [],
-			}
-		*/
+
+		this.XXX_files = {
+			a: [],
+			b: [],
+			c: [],
+			d: [],
+			e: [],
+			f: [],
+			g: [],
+			h: [],
+		};
+
+		this.XXX_ranks = {
+			1: [],
+			2: [],
+			3: [],
+			4: [],
+			5: [],
+			6: [],
+			7: [],
+			8: [],
+		};
+
 		this.activeColor = null;
 		this.castlingAvailability = null;
 		this.enPassant = null;
@@ -209,11 +220,25 @@ class Board {
 			b: [],
 		};
 
-		this.squares = [];
+		/*
+		 * this.squares[0][0] == this.a1
+		 * this.squares[1][0] == this.b1
+		 * this.squares[1][1] == this.b2
+		 */
+		this.squares = [
+			[],
+			[],
+			[],
+			[],
+			[],
+			[],
+			[],
+			[],
+		];
 
-		this.eachCoordinate(coordinate => {
+		this.XXX_eachCoordinate((coordinate, index) => {
 			this[coordinate] = new Square(this, coordinate);
-			this.squares.push(this[coordinate]);
+			this.squares[Math.floor(index / this.squares.length)].push(this[coordinate]);
 		});
 
 		// fill the file property
@@ -263,6 +288,15 @@ class Board {
 		for ( let r = this.ranks.length - 1; r >= 0; r-- ) {
 			for ( let f = 0; f < this.files.length; f++ ) {
 				callback(this.files[f] + this.ranks[r]);
+			}
+		}
+	}
+
+	XXX_eachCoordinate(callback) {
+		let index = 0;
+		for ( let file in this.XXX_files) {
+			for ( let rank in this.XXX_ranks) {
+				callback(file + rank, index++);
 			}
 		}
 	}
