@@ -122,9 +122,9 @@ class Square {
 	constructor(board, coordinate) {
 		this.board = board;
 		this.coordinate = coordinate;
-		this.piece = null;
 		this.file = coordinate[0];
 		this.rank = coordinate[1];
+		this.piece = null;
 	}
 
 	//getAdjacentSquare() {}
@@ -266,10 +266,9 @@ class Board {
 		this.pieceFactory = new PieceFactory(this);
 	}
 
-
 	placePieces(FENPiecePlacement) {
 		let entries = FENPiecePlacement.match(/\w/g);
-		entries = entries.map(entry => Number.isInteger(parseInt(entry)) ? parseInt(entry) : entry );
+		entries = entries.map(entry => Number.isInteger(parseInt(entry)) ? parseInt(entry) : entry);
 
 		let index = 0;
 		this.eachCoordinate(coordinate => {
@@ -284,6 +283,7 @@ class Board {
 		});
 	}
 
+
 	eachCoordinate(callback) {
 		for ( let r = this.ranks.length - 1; r >= 0; r-- ) {
 			for ( let f = 0; f < this.files.length; f++ ) {
@@ -294,10 +294,16 @@ class Board {
 
 	XXX_eachCoordinate(callback) {
 		let index = 0;
+		let ranks = [];
+		// prepere to revert the rank order to work with the FEN-notation
+		for ( let rank in this.XXX_ranks) {
+			ranks.push(rank);
+		}
+
 		for ( let file in this.XXX_files) {
-			for ( let rank in this.XXX_ranks) {
+			ranks.reverse().forEach(rank => {
 				callback(file + rank, index++);
-			}
+			});
 		}
 	}
 
