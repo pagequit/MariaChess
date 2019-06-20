@@ -1,3 +1,7 @@
+function not(arg) {
+	return !arg;
+}
+
 class Piece {
 	constructor(square, color, symbol = '?') {
 		this.square = square;
@@ -6,33 +10,51 @@ class Piece {
 	}
 
 	get possibleMoves() {
-		return 'foo';
+		return undefined;
 	}
 }
 
 class Pawn extends Piece {
 	constructor(square, color, symbol) {
 		super(square, color, symbol);
+
+		this.direction = this.getDirection(color);
 	}
 
-	// this function is ugly as ... u know ugly things look like
+	getDirection(color) {
+		const directions = {
+			w: 'up',
+			b: 'down',
+		};
+
+		return directions[color];
+	}
+
 	get possibleMoves() {
 		let possibleMoves = [];
+		let dRight = `${this.direction}Right`;
+		let dLeft = `${this.direction}Left`;
 
-		if ( this.square.board.enPassant ) {
-			possibleMoves.push(this.square.board.enPassant);
+		if ( this.square[this.direction] && not(this.square[this.direction].piece) ) {
+			possibleMoves.push(this.square[this.direction]);
 		}
 
-		if ( this.square.up && (this.square.up.piece === null) ) {
-			possibleMoves.push(this.square.up);
+		if (
+			this.square[dRight] &&
+			this.square[dRight].piece &&
+			this.square[dRight].piece.color !== this.color ||
+			this.square[dRight] === this.square.board.enPassant
+		) {
+			possibleMoves.push(this.square[dRight]);
 		}
 
-		if ( this.square.upRight && (this.square.upRight.piece && this.square.upRight.piece.color !== this.color) ) {
-			possibleMoves.push(this.square.upRight);
-		}
-
-		if ( this.square.upLeft && (this.square.upLeft.piece && this.square.upLeft.piece.color !== this.color) ) {
-			possibleMoves.push(this.square.upLeft);
+		if (
+			this.square[dLeft] &&
+			this.square[dLeft].piece &&
+			this.square[dLeft].piece.color !== this.color ||
+			this.square[dLeft] === this.square.board.enPassant
+		) {
+			possibleMoves.push(this.square[dLeft]);
 		}
 
 		return possibleMoves;
@@ -94,7 +116,7 @@ class PieceFactory {
 	}
 
 	blueprint(symbol, square) {
-		const blueprints =  {
+		const blueprints = {
 			P: () => new Pawn(square,'w', symbol),
 			p: () => new Pawn(square,'b', symbol),
 			N: () => new Knight(square,'w', symbol),
@@ -124,27 +146,17 @@ class Square {
 		this.coordinate = coordinate;
 		this.file = coordinate[0];
 		this.rank = coordinate[1];
+		this.fileIndex = board.files.indexOf(this.file);
+		this.rankIndex = board.ranks.indexOf(this.rank);
 		this.piece = null;
 	}
 
-	//getAdjacentSquare() {}
-
-	// what happend if there is no square we looking for, while chaining?
 	get up() {
-		let index = this.board.ranks.indexOf(this.rank);
-		let upAdjacentSquare = this.board[this.file + this.board.ranks[index + 1]];
-
-		return upAdjacentSquare;
-
-		// experimentel
-		// this.board.ranks[this.rank];
+		return this.board.squares[this.fileIndex][this.rankIndex + 1];
 	}
 
 	get right() {
-		let index = this.board.files.indexOf(this.file);
-		let rightAdjacentSquare = this.board[this.board.files[index + 1] + this.rank];
-
-		return rightAdjacentSquare;
+		return this.board.squares[this.fileIndex + 1] ? this.board.squares[this.fileIndex + 1][this.rankIndex] : undefined; // <-- is ugly
 	}
 
 	get down() {
@@ -155,14 +167,11 @@ class Square {
 	}
 
 	get left() {
-		let index = this.board.files.indexOf(this.file);
-		let leftAdjacentSquare = this.board[this.board.files[index - 1] + this.rank];
-
-		return leftAdjacentSquare;
+		return this.board[this.board.files[this.fileIndex - 1] + this.rank]; // <-- this is how it should work well :) [time to sleep...]
 	}
 
 	get upRight() {
-		return this.up ? this.up.right : undefined;
+		return this.board.squares[this.fileIndex + 1][this.rankIndex + 1]; // <-- causes an error on the edges
 	}
 
 	get upLeft() {
@@ -236,9 +245,13 @@ class Board {
 			[],
 		];
 
+		// create the squares
 		this.XXX_eachCoordinate((coordinate, index) => {
-			this[coordinate] = new Square(this, coordinate);
-			this.squares[Math.floor(index / this.squares.length)].push(this[coordinate]);
+			let square = new Square(this, coordinate);
+			this[coordinate] = square;
+			this.squares[Math.floor(index / this.squares.length)].push(square);
+			this.XXX_files[coordinate[0]].push(square);
+			this.XXX_ranks[coordinate[1]].push(square);
 		});
 
 		// fill the file property
@@ -271,13 +284,14 @@ class Board {
 		entries = entries.map(entry => Number.isInteger(parseInt(entry)) ? parseInt(entry) : entry);
 
 		let index = 0;
-		this.eachCoordinate(coordinate => {
+		this.eachCoordinateFEN(coordinate => {
 			if ( Number.isInteger(entries[index]) && entries[index] > 0 ) {
 				--entries[index] <= 0 && index++;
 			}
 			else {
-				this[coordinate].piece = this.pieceFactory.createPiece(entries[index], coordinate);
-				this.pieces[this[coordinate].piece.color].push(this[coordinate].piece);
+				let piece = this.pieceFactory.createPiece(entries[index], coordinate);
+				this[coordinate].piece = piece;
+				this.pieces[this[coordinate].piece.color].push(piece);
 				index++;
 			}
 		});
@@ -292,18 +306,27 @@ class Board {
 		}
 	}
 
-	XXX_eachCoordinate(callback) {
-		let index = 0;
+	eachCoordinateFEN(callback) {
 		let ranks = [];
-		// prepere to revert the rank order to work with the FEN-notation
-		for ( let rank in this.XXX_ranks) {
+		for ( let rank in this.XXX_ranks ) {
 			ranks.push(rank);
 		}
+		ranks.reverse();
 
-		for ( let file in this.XXX_files) {
-			ranks.reverse().forEach(rank => {
+		ranks.forEach(rank => {
+			for ( let file in this.XXX_files ) {
+				callback(file + rank);
+			}
+		});
+	}
+
+	XXX_eachCoordinate(callback) {
+		let index = 0;
+
+		for ( let file in this.XXX_files ) {
+			for ( let rank in this.XXX_ranks ) {
 				callback(file + rank, index++);
-			});
+			}
 		}
 	}
 
