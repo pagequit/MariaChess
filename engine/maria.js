@@ -31,12 +31,16 @@ class Pawn extends Piece {
 	}
 
 	get possibleMoves() {
-		let possibleMoves = [];
+		let moveSet = {
+			origin: this.square,
+			targets: [],
+		};
+
 		let dRight = `${this.direction}Right`;
 		let dLeft = `${this.direction}Left`;
 
 		if ( this.square[this.direction] && not(this.square[this.direction].piece) ) {
-			possibleMoves.push(this.square[this.direction]);
+			moveSet.targets.push(this.square[this.direction]);
 		}
 
 		if (
@@ -45,7 +49,7 @@ class Pawn extends Piece {
 			this.square[dRight].piece.color !== this.color ||
 			this.square[dRight] === this.square.board.enPassant
 		) {
-			possibleMoves.push(this.square[dRight]);
+			moveSet.targets.push(this.square[dRight]);
 		}
 
 		if (
@@ -54,10 +58,10 @@ class Pawn extends Piece {
 			this.square[dLeft].piece.color !== this.color ||
 			this.square[dLeft] === this.square.board.enPassant
 		) {
-			possibleMoves.push(this.square[dLeft]);
+			moveSet.targets.push(this.square[dLeft]);
 		}
 
-		return possibleMoves;
+		return moveSet;
 	}
 }
 
@@ -78,7 +82,6 @@ class Rook extends Piece {
 		super(square, color, symbol);
 	}
 
-	// this function is also ugly as ugly things look like
 	get possibleMoves() {
 		let possibleMoves = [];
 
@@ -92,6 +95,18 @@ class Rook extends Piece {
 		while ( currentRight != undefined ) {
 			possibleMoves.push(currentRight);
 			currentRight = currentRight.right;
+		}
+
+		let currentDown = this.square.down;
+		while ( currentDown != undefined ) {
+			possibleMoves.push(currentDown);
+			currentDown = currentDown.up;
+		}
+
+		let currentLeft = this.square.left;
+		while ( currentLeft != undefined ) {
+			possibleMoves.push(currentLeft);
+			currentLeft = currentLeft.left;
 		}
 
 		return possibleMoves;
@@ -152,38 +167,35 @@ class Square {
 	}
 
 	get up() {
-		return this.board.squares[this.fileIndex][this.rankIndex + 1];
+		return this.board[this.file + this.board.ranks[this.rankIndex + 1]];
 	}
 
 	get right() {
-		return this.board.squares[this.fileIndex + 1] ? this.board.squares[this.fileIndex + 1][this.rankIndex] : undefined; // <-- is ugly
+		return this.board[this.board.files[this.fileIndex + 1] + this.rank];
 	}
 
 	get down() {
-		let index = this.board.ranks.indexOf(this.rank);
-		let downAdjacentSquare = this.board[this.file + this.board.ranks[index - 1]];
-
-		return downAdjacentSquare;
+		return this.board[this.file + this.board.ranks[this.rankIndex - 1]];
 	}
 
 	get left() {
-		return this.board[this.board.files[this.fileIndex - 1] + this.rank]; // <-- this is how it should work well :) [time to sleep...]
+		return this.board[this.board.files[this.fileIndex - 1] + this.rank];
 	}
 
 	get upRight() {
-		return this.board.squares[this.fileIndex + 1][this.rankIndex + 1]; // <-- causes an error on the edges
+		return this.board[this.board.files[this.fileIndex + 1] + this.board.ranks[this.rankIndex + 1]];
 	}
 
 	get upLeft() {
-		return this.up ? this.up.left : undefined;
+		return this.board[this.board.files[this.fileIndex - 1] + this.board.ranks[this.rankIndex + 1]];
 	}
 
 	get downRight() {
-		return this.down ? this.down.right : undefined;
+		return this.board[this.board.files[this.fileIndex + 1] + this.board.ranks[this.rankIndex - 1]];
 	}
 
 	get downLeft() {
-		return this.down ? this.down.left : undefined;
+		return this.board[this.board.files[this.fileIndex - 1] + this.board.ranks[this.rankIndex - 1]];
 	}
 }
 
@@ -193,31 +205,6 @@ class Board {
 		this.engine = engine;
 		this.files = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
 		this.ranks = ['1', '2', '3', '4', '5', '6', '7', '8'];
-		this.file = {};
-		this.rank = {};
-
-		this.XXX_files = {
-			a: [],
-			b: [],
-			c: [],
-			d: [],
-			e: [],
-			f: [],
-			g: [],
-			h: [],
-		};
-
-		this.XXX_ranks = {
-			1: [],
-			2: [],
-			3: [],
-			4: [],
-			5: [],
-			6: [],
-			7: [],
-			8: [],
-		};
-
 		this.activeColor = null;
 		this.castlingAvailability = null;
 		this.enPassant = null;
@@ -229,59 +216,18 @@ class Board {
 			b: [],
 		};
 
-		/*
-		 * this.squares[0][0] == this.a1
-		 * this.squares[1][0] == this.b1
-		 * this.squares[1][1] == this.b2
-		 */
-		this.squares = [
-			[],
-			[],
-			[],
-			[],
-			[],
-			[],
-			[],
-			[],
-		];
-
-		// create the squares
-		this.XXX_eachCoordinate((coordinate, index) => {
-			let square = new Square(this, coordinate);
-			this[coordinate] = square;
-			this.squares[Math.floor(index / this.squares.length)].push(square);
-			this.XXX_files[coordinate[0]].push(square);
-			this.XXX_ranks[coordinate[1]].push(square);
-		});
-
-		// fill the file property
-		this.files.forEach(file => {
-			this.file[file] = this.squares.reduce((accumulator, square) => {
-				if ( square.file === file ) {
-					accumulator.push(square);
-				}
-
-				return accumulator;
-			}, []);
-		});
-
-		// fill the rank property
-		this.ranks.forEach(rank => {
-			this.rank[rank] = this.squares.reduce((accumulator, square) => {
-				if ( square.rank === rank ) {
-					accumulator.push(square);
-				}
-
-				return accumulator;
-			}, []);
+		this.eachCoordinate(coordinate => {
+			this[coordinate] = new Square(this, coordinate);
 		});
 
 		this.pieceFactory = new PieceFactory(this);
 	}
 
 	placePieces(FENPiecePlacement) {
-		let entries = FENPiecePlacement.match(/\w/g);
-		entries = entries.map(entry => Number.isInteger(parseInt(entry)) ? parseInt(entry) : entry);
+		let entries = FENPiecePlacement
+			.match(/\w/g)
+			.map(entry => Number.isInteger(parseInt(entry)) ? parseInt(entry) : entry)
+		;
 
 		let index = 0;
 		this.eachCoordinateFEN(coordinate => {
@@ -297,9 +243,8 @@ class Board {
 		});
 	}
 
-
 	eachCoordinate(callback) {
-		for ( let r = this.ranks.length - 1; r >= 0; r-- ) {
+		for ( let r = 0; r < this.ranks.length; r++ ) {
 			for ( let f = 0; f < this.files.length; f++ ) {
 				callback(this.files[f] + this.ranks[r]);
 			}
@@ -307,25 +252,9 @@ class Board {
 	}
 
 	eachCoordinateFEN(callback) {
-		let ranks = [];
-		for ( let rank in this.XXX_ranks ) {
-			ranks.push(rank);
-		}
-		ranks.reverse();
-
-		ranks.forEach(rank => {
-			for ( let file in this.XXX_files ) {
-				callback(file + rank);
-			}
-		});
-	}
-
-	XXX_eachCoordinate(callback) {
-		let index = 0;
-
-		for ( let file in this.XXX_files ) {
-			for ( let rank in this.XXX_ranks ) {
-				callback(file + rank, index++);
+		for ( let r = this.ranks.length - 1; r >= 0; r-- ) {
+			for ( let f = 0; f < this.files.length; f++ ) {
+				callback(this.files[f] + this.ranks[r]);
 			}
 		}
 	}
