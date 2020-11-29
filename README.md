@@ -1,1 +1,1 @@
-# MariaChessJs
+# MariaChess
