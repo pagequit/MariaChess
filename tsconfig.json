@@ -1,8 +1,5 @@
 {
-  "files": [
-    "src/main.ts",
-    "src/MariaChess.ts"
-  ],
+  "rootDir": "src/",
   "compilerOptions": {
     "noImplicitAny": true,
     "target": "es6"
