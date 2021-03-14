@@ -1,5 +1,9 @@
-import sayHello from './MariaChess';
-import cli from './interfaces/cli';
+import MariaChess from './MariaChess';
+import { Piece } from './Board';
 
-console.log(sayHello('Maria'));
-cli();
+const maria = new MariaChess();
+
+maria.board.squares[1] = Piece.Black | Piece.Bishop;
+
+console.log(Piece.GetColor(maria.board.squares[1]));
+console.log(Piece.GetType(maria.board.squares[1]));

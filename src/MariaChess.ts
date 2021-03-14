@@ -1,3 +1,9 @@
-export default function (name: string) {
-	return `Hello from ${name}`;
+import Board from './Board';
+
+export default class MariaChess {
+	board: Board;
+
+	constructor() {
+		this.board = new Board();
+	}
 }
