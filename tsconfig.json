@@ -2,6 +2,6 @@
   "rootDir": "src/",
   "compilerOptions": {
     "noImplicitAny": true,
-    "target": "es6"
+    "target": "ES2020"
   }
 }

@@ -1,12 +1,19 @@
 export default class Board {
-	readonly defaultFEN: string = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
+	defaultFEN: string;
 	squares: Array<number>;
 
 	constructor() {
+		this.defaultFEN = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
 		this.squares = new Array(64);
 	}
 
-	parseFEN(FEN: string): void { }
+	parseFEN(FEN: string): void {
+		const sections = FEN.matchAll(/[^\s]+/g);
+
+		for (const section of sections) {
+			console.log(section[0]);
+		}
+	}
 }
 
 export abstract class Piece {

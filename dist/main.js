@@ -5,7 +5,12 @@ class Board {
         this.defaultFEN = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
         this.squares = new Array(64);
     }
-    parseFEN(FEN) { }
+    parseFEN(FEN) {
+        const sections = FEN.matchAll(/[^\s]+/g);
+        for (const section of sections) {
+            console.log(section[0]);
+        }
+    }
 }
 class Piece {
     static GetColor(piece) {
@@ -33,5 +38,4 @@ class MariaChess {
 
 const maria = new MariaChess();
 maria.board.squares[1] = Piece.Black | Piece.Bishop;
-console.log(Piece.GetColor(maria.board.squares[1]));
-console.log(Piece.GetType(maria.board.squares[1]));
+maria.board.parseFEN(maria.board.defaultFEN);
