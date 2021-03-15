@@ -3,6 +3,9 @@ import { Piece } from './Board';
 
 const maria = new MariaChess();
 
-maria.board.squares[1] = Piece.Black | Piece.Bishop;
+maria.board.load('8/7p/5p2/8/K1k5/8/8/r7 w - - 3 52');
 
-maria.board.parseFEN(maria.board.defaultFEN);
+console.log(maria.board.squares);
+maria.board.squares.forEach(square => {
+	console.log(Piece.GetType(square), Piece.GetColor(square));
+});

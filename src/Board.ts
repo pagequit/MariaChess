@@ -7,17 +7,63 @@ export default class Board {
 		this.squares = new Array(64);
 	}
 
-	parseFEN(FEN: string): void {
-		const sections = FEN.matchAll(/[^\s]+/g);
+	load(FEN: string): void {
+		const sectionsRegex = /[^\s]+/g;
+		const sections = [...FEN.matchAll(sectionsRegex)];
+		const sectionsReference = [...this.defaultFEN.matchAll(sectionsRegex)];
 
-		for (const section of sections) {
-			console.log(section[0]);
+		if (sections.length !== sectionsReference.length) {
+			throw new Error('Invalid FEN: Wrong amount of sections!');
+		}
+
+		const rowsRegex = /[^//]+/g;
+		const rows = [...sections[0][0].matchAll(rowsRegex)];
+		const rowsReference = [...sectionsReference[0][0].matchAll(rowsRegex)];
+
+		if (rows.length !== rowsReference.length) {
+			throw new Error('Invalid FEN: Invalid number of rows!');
+		}
+
+		const rowCountReference: number = parseInt(rowsReference[2][0]);
+		const fileCountReference: number = rowsReference[1][0].length;
+		let fileCount: number;
+		
+		for (let rowCount: number = 0; rowCount < rowCountReference; rowCount++) {
+			fileCount = 0;
+			for (let char of rows[rowCount][0]) {
+				if (isNaN(parseInt(char))) {
+					let index = fileCount + (rowCount * rowCountReference);
+					let transChar = char.toLowerCase();
+
+					this.squares[index] = transChar === char
+						? Piece.Black
+						: Piece.White;
+
+					this.squares[index] = this.squares[index] | {
+						['p']: Piece.Pawn,
+						['n']: Piece.Knight,
+						['b']: Piece.Bishop,
+						['r']: Piece.Rook,
+						['q']: Piece.Queen,
+						['k']: Piece.King,
+					}[transChar];
+
+					if (!Piece.GetType(this.squares[index])) {
+						throw new Error ('Invalid FEN: Unknown piece!');
+					}
+				}
+				else {
+					fileCount += parseInt(char) - 1;
+				}
+				if (++fileCount > fileCountReference) {
+					throw new Error ('Invalid FEN: Too many files!');
+				}
+			}
 		}
 	}
 }
 
 export abstract class Piece {
-	static None: number		=  0;
 	static Pawn: number		=  1;
 	static Knight: number	=  2;
 	static Bishop: number	=  3;
