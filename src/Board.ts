@@ -1,10 +1,27 @@
+interface CastlingRights {
+	kingSide: boolean,
+	queenSide: boolean,
+}
+
 export default class Board {
 	defaultFEN: string;
 	squares: Array<number>;
+	whiteToMove: boolean;
+	enPassant: string;
+	fullmoveNumber: number;
+	halfmoveClock: number;
+	castlingRights: {
+		white: CastlingRights,
+		black: CastlingRights,
+	};
 
 	constructor() {
 		this.defaultFEN = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
 		this.squares = new Array(64);
+		this.castlingRights = {
+			white: {kingSide: false, queenSide: false},
+			black: {kingSide: false, queenSide: false},
+		};
 	}
 
 	load(FEN: string): void {
@@ -60,6 +77,22 @@ export default class Board {
 				}
 			}
 		}
+
+		if (sections[1][0].match(/[^w|b]/)) {
+			throw new Error ('Invalid FEN: Unknown active color!');
+		}
+
+		this.whiteToMove = sections[1][0] === 'w';
+
+		// yes, this validation allows a string like 'QQQQ', but it's better than nothing...
+		if ([...sections[2][0].matchAll(/([KQkq]{1,4}|-)/g)].length > 1) {
+			throw new Error ('Invalid FEN: Invalid castling rights!');
+		}
+
+		this.castlingRights.white.kingSide = sections[2][0].includes('K');
+		this.castlingRights.white.queenSide = sections[2][0].includes('Q');
+		this.castlingRights.black.kingSide = sections[2][0].includes('k');
+		this.castlingRights.black.queenSide = sections[2][0].includes('q');
 	}
 }
 
@@ -81,4 +114,14 @@ export abstract class Piece {
 	static GetType(piece: number): number {
 		return piece & 7;
 	}
+}
+
+enum MoveMask {
+	Normal		=  1,
+	Capture		=  2,
+	BigPawn		=  4,
+	EnPassant	=  8,
+	Promotion	= 16,
+	KCastle		= 32,
+	QCastle		= 64,
 }
