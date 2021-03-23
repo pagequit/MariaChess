@@ -10,4 +10,4 @@ catch (error) {
 	console.error(error);
 }
 
-console.log(maria.board);
+console.log(maria.board.toFEN());

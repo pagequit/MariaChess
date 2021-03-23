@@ -4,7 +4,7 @@ interface CastlingRights {
 }
 
 interface Coordinats {
-	[name: string] :number,
+	[name: string]: number,
 }
 
 export default class Board {
@@ -29,7 +29,7 @@ export default class Board {
 			}
 		}
 		return coord;
-	})();
+	}());
 
 	constructor() {
 		this.squares = new Array(64);
@@ -41,6 +41,14 @@ export default class Board {
 			white: { kingSide: false, queenSide: false },
 			black: { kingSide: false, queenSide: false },
 		};
+	}
+
+	static SquareToAlgebraic(square: number): string {
+		return 'TODO';
+	}
+
+	reset(): void {
+		this.load(Board.defaultFEN);
 	}
 
 	load(FEN: string): void {
@@ -65,27 +73,27 @@ export default class Board {
 		let fileCount: number;
 
 		if (sections[1][0].match(/[^w|b]/)) {
-			throw new Error ('Invalid FEN: Unknown active color!');
+			throw new Error('Invalid FEN: Unknown active color!');
 		}
 
 		// yes, this validation allows castling right like 'QQQQ', but it's better than nothing...
 		if ([...sections[2][0].matchAll(/([KQkq]{1,4}|-)/g)].length > 1) {
-			throw new Error ('Invalid FEN: Invalid castling rights!');
+			throw new Error('Invalid FEN: Invalid castling rights!');
 		}
 
 		const enPassantMatch = sections[3][0].match(/[a-h][1-8]|-/g);
 		if (!enPassantMatch) {
-			throw new Error ('Invalid FEN: Invalid en passant!');
+			throw new Error('Invalid FEN: Invalid en passant!');
 		}
 
 		const movesRegex = /^[0-9]+$/;
 
 		if (!movesRegex.test(sections[4][0])) {
-			throw new Error ('Invalid FEN: Invalid halfmove clock value!');
+			throw new Error('Invalid FEN: Invalid halfmove clock value!');
 		}
 
 		if (!movesRegex.test(sections[5][0])) {
-			throw new Error ('Invalid FEN: Invalid fullmove number!');
+			throw new Error('Invalid FEN: Invalid fullmove number!');
 		}
 
 		for (let rowCount: number = 0; rowCount < rowCountReference; rowCount++) {
@@ -109,14 +117,14 @@ export default class Board {
 					}[transChar];
 
 					if (!Piece.GetType(this.squares[index])) {
-						throw new Error ('Invalid FEN: Unknown piece!');
+						throw new Error('Invalid FEN: Unknown piece!');
 					}
 				}
 				else {
 					fileCount += parseInt(char) - 1;
 				}
 				if (++fileCount > fileCountReference) {
-					throw new Error ('Invalid FEN: Too many files!');
+					throw new Error('Invalid FEN: Too many files!');
 				}
 			}
 		}
@@ -128,17 +136,71 @@ export default class Board {
 
 		this.whiteToMove = sections[1][0] === 'w';
 
-
 		this.enPassant = enPassantMatch[0] === '-'
 			? -1
 			: Board.coord[enPassantMatch[0]];
 
-
 		this.halfmoveClock = parseInt(sections[4][0]);
-
 		this.fullmoveNumber = parseInt(sections[5][0]);
 	}
+
+	toFEN(): string {
+		let FEN: string = '';
+		let nextOffset: number = 0;
+		let lastFile = false;
+
+		for (let i: number = 0; i <= this.squares.length; i++) {
+			lastFile = !((i + 1) % 8);
+
+			if (!this.squares[i]) {
+				nextOffset++;
+
+				if (lastFile) {
+					FEN += nextOffset;
+					nextOffset = 0;
+				}
+			}
+			else {
+				FEN += nextOffset === 0
+					? Piece.GetPrinable(this.squares[i])
+					: nextOffset + Piece.GetPrinable(this.squares[i]);
+
+				nextOffset = 0;
+			}
+			if (lastFile) {
+				FEN += '/';
+			}
+		}
+
+		// remove the last '/'
+		FEN = FEN.substr(0, FEN.length - 1);
+
+		FEN += this.whiteToMove ? ' w ' : ' b ';
+
+		if (this.castlingRights.white.kingSide) {
+			FEN += 'K'
+		}
+		if (this.castlingRights.white.queenSide) {
+			FEN += 'Q'
+		}
+		if (this.castlingRights.black.kingSide) {
+			FEN += 'k'
+		}
+		if (this.castlingRights.black.queenSide) {
+			FEN += 'q'
+		}
+
+		FEN += this.enPassant >= 0
+			? ' ' + Board.SquareToAlgebraic(this.enPassant)
+			: ' -';
+
+		FEN += ' ' + this.halfmoveClock;
+		FEN += ' ' + this.fullmoveNumber;
+
+		return FEN;
+	}
 }
+
 
 export abstract class Piece {
 	static Pawn: number		=  1;
@@ -157,5 +219,20 @@ export abstract class Piece {
 
 	static GetType(piece: number): number {
 		return piece & 7;
+	}
+
+	static GetPrinable(piece: number): string {
+		let printableType: string = {
+			[1]: 'p',
+			[2]: 'n',
+			[3]: 'b',
+			[4]: 'r',
+			[5]: 'q',
+			[6]: 'k',
+		}[Piece.GetType(piece)];
+
+		return Piece.GetColor(piece) & 8
+			? printableType.toLocaleUpperCase()
+			: printableType;
 	}
 }
