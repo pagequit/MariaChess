@@ -44,7 +44,10 @@ export default class Board {
 	}
 
 	static SquareToAlgebraic(square: number): string {
-		return 'TODO';
+		let algebraic = Board.fileNames[(square & 7)];
+		algebraic += Board.rankNames[(square >> 3)];
+
+		return algebraic;
 	}
 
 	reset(): void {
