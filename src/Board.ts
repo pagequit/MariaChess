@@ -1,11 +1,6 @@
-interface CastlingRights {
-	kingSide: boolean,
-	queenSide: boolean,
-}
-
-interface Coordinats {
-	[name: string]: number,
-}
+import Piece from './Piece';
+import CastlingRights from './interfaces/CastlingRights';
+import Coordinates from './interfaces/Coordinates';
 
 export default class Board {
 	squares: Array<number>;
@@ -21,8 +16,8 @@ export default class Board {
 	static readonly fileNames: string = 'abcdefgh';
 	static readonly rankNames: string = '87654321'; // revers direction makes things easier because FEN starts at a8
 	// Board.coord.a8 = 0 ... Board.coord.h1 = 63;
-	static readonly coord: Coordinats = (function(): Coordinats {
-		const coord: Coordinats = {};
+	static readonly coord: Coordinates = (function(): Coordinates {
+		const coord: Coordinates = {};
 		for (let rankIdx = 0; rankIdx < Board.rankNames.length; rankIdx++) {
 			for (let fileIdx = 0; fileIdx < Board.rankNames.length; fileIdx++) {
 				coord[`${Board.fileNames[fileIdx]}${Board.rankNames[rankIdx]}`] = rankIdx * 8 + fileIdx;
@@ -201,41 +196,5 @@ export default class Board {
 		FEN += ' ' + this.fullmoveNumber;
 
 		return FEN;
-	}
-}
-
-
-export abstract class Piece {
-	static Pawn: number		=  1;
-	static Knight: number	=  2;
-	static Bishop: number	=  3;
-	static Rook: number		=  4;
-	static Queen: number	=  5;
-	static King: number		=  6;
-
-	static White: number	=  8;
-	static Black: number	= 16;
-
-	static GetColor(piece: number): number {
-		return piece & 24;
-	}
-
-	static GetType(piece: number): number {
-		return piece & 7;
-	}
-
-	static GetPrinable(piece: number): string {
-		let printableType: string = {
-			[1]: 'p',
-			[2]: 'n',
-			[3]: 'b',
-			[4]: 'r',
-			[5]: 'q',
-			[6]: 'k',
-		}[Piece.GetType(piece)];
-
-		return Piece.GetColor(piece) & 8
-			? printableType.toLocaleUpperCase()
-			: printableType;
 	}
 }
