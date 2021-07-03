@@ -12,7 +12,7 @@ export default class Board {
 		white: CastlingRights,
 		black: CastlingRights,
 	};
-	static readonly defaultFEN: string = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
+	static readonly startposFEN: string = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
 	static readonly fileNames: string = 'abcdefgh';
 	static readonly rankNames: string = '87654321'; // revers direction makes things easier because FEN starts at a8
 	// Board.coord.a8 = 0 ... Board.coord.h1 = 63;
@@ -46,13 +46,13 @@ export default class Board {
 	}
 
 	reset(): void {
-		this.load(Board.defaultFEN);
+		this.load(Board.startposFEN);
 	}
 
 	load(FEN: string): void {
 		const sectionsRegex = /[^\s]+/g;
 		const sections = [...FEN.matchAll(sectionsRegex)];
-		const sectionsReference = [...Board.defaultFEN.matchAll(sectionsRegex)];
+		const sectionsReference = [...Board.startposFEN.matchAll(sectionsRegex)];
 
 		if (sections.length !== sectionsReference.length) {
 			throw new Error('Invalid FEN: Wrong amount of sections!');

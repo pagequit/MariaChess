@@ -10,5 +10,6 @@ export default class MariaChess {
 	constructor() {
 		this.board = new Board();
 		this.games = [];
+		this.api = new API(this);
 	}
 }
