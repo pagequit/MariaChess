@@ -1,8 +1,6 @@
 import { ReadLine } from 'node:readline';
 import API from './API';
 
-const readline = require('readline');
-
 interface Actions {
 	[name: string]: Function,
 }
@@ -14,7 +12,7 @@ export default class CLI {
 	api: API;
 
 	constructor() {
-		this.rl = readline.createInterface({
+		this.rl = require('readline').createInterface({
 			input: process.stdin,
 			output: process.stdout,
 		});
@@ -33,7 +31,7 @@ export default class CLI {
 
 	parseAction(message: string): Promise<Array<string>> {
 		return new Promise((resolve, reject) => {
-			const messageChunks = message.split(/\s+/g);
+			const messageChunks: Array<string> = message.split(/\s+/g);
 
 			typeof this.actions[messageChunks[0]] === 'function'
 				? resolve(messageChunks)
@@ -43,7 +41,7 @@ export default class CLI {
 
 	parseMessage(message: string): void {
 		this.parseAction(message).then(messageChunks => {
-			const action = messageChunks.shift();
+			const action: string = messageChunks.shift();
 			this.actions[action](messageChunks);
 		}).catch(error => {
 			console.error(error);
@@ -55,12 +53,12 @@ export default class CLI {
 	}
 
 	newGame(args: Array<string>): void {
-		const FEN = args.join(' ');
+		const FEN: string = args.join(' ');
 		this.api.emit('newGame', FEN);
 	}
 
 	nextMove(args: Array<string>): void {
-		const move = args[0];
+		const move: string = args[0];
 		this.api.emit('nextMove', move);
 	}
 }

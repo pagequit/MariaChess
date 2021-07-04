@@ -19,14 +19,16 @@ export default abstract class Piece {
 	}
 
 	static GetPrinable(piece: number): string {
-		let printableType: string = {
+		const printableMap: any = {
 			[1]: 'p',
 			[2]: 'n',
 			[3]: 'b',
 			[4]: 'r',
 			[5]: 'q',
 			[6]: 'k',
-		}[Piece.GetType(piece)];
+		};
+
+		let printableType: string = printableMap[Piece.GetType(piece)];
 
 		return Piece.GetColor(piece) & 8
 			? printableType.toLocaleUpperCase()
