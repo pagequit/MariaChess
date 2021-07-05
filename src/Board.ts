@@ -1,8 +1,11 @@
 import Piece from './Piece';
+import Move from './Move';
 import CastlingRights from './interfaces/CastlingRights';
+import Moves from './interfaces/Moves';
 import Coordinates from './interfaces/Coordinates';
 
-export default class Board {
+export default class Board implements Moves {
+	moves: Array<Move>;
 	squares: Array<number>;
 	whiteToMove: boolean;
 	enPassant: number;
@@ -27,6 +30,7 @@ export default class Board {
 	}());
 
 	constructor() {
+		this.moves = [];
 		this.squares = new Array(64);
 		this.whiteToMove = true;
 		this.enPassant = -1;

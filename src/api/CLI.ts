@@ -10,6 +10,7 @@ export default class CLI {
 	rl: ReadLine;
 	actions: Actions;
 	api: API;
+	id: string;
 
 	constructor() {
 		this.rl = require('readline').createInterface({
@@ -25,6 +26,7 @@ export default class CLI {
 	}
 
 	mount(api: API) :void {
+		this.id = require('crypto').randomBytes(4).toString('hex');
 		this.api = api;
 		this.rl.on('line', this.parseMessage.bind(this));
 	}
@@ -54,11 +56,11 @@ export default class CLI {
 
 	newGame(args: Array<string>): void {
 		const FEN: string = args.join(' ');
-		this.api.emit('newGame', FEN);
+		this.api.emit('newGame', this.id, FEN);
 	}
 
 	nextMove(args: Array<string>): void {
 		const move: string = args[0];
-		this.api.emit('nextMove', move);
+		this.api.emit('nextMove', this.id, move);
 	}
 }

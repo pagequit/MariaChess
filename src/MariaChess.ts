@@ -1,15 +1,12 @@
 import API from './api/API';
-import Board from './Board';
 import Game from './Game';
 
 export default class MariaChess {
 	api: API;
-	board: Board;
-	games: Array<Game>;
+	games: Map<string, Game>; // shuld be a collection or map
 
 	constructor() {
-		this.board = new Board();
-		this.games = [];
+		this.games = new Map();
 		this.api = new API(this);
 	}
 }

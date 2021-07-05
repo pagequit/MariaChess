@@ -1,9 +1,9 @@
 import MariaChess from '../MariaChess';
 import CLI from './CLI';
 import LichessAPI from './LichessAPI';
-import UCIUtility from '../UCIUtility';
 import Board from '../Board';
-import Piece from '../Piece';
+import Game from '../Game';
+import Move from '../Move';
 
 const Events = require('events');
 
@@ -35,45 +35,30 @@ export default class API extends Events {
 		this.cli.mount(this);
 	}
 
-	newGame(FEN?: string): void {
+	newGame(gameId: string, FEN?: string): void {
 		setImmediate(() => {
+			this.maria.games.set(gameId, new Game(new Board(), 'data'));
+
 			if (FEN) {
 				try {
-					this.maria.board.load(FEN);
+					this.maria.games.get(gameId).board.load(FEN);
 				}
 				catch(error) {
 					console.error(error);
 				}
 			}
 			else {
-				this.maria.board.reset();
+				this.maria.games.get(gameId).board.reset();
 			}
-			console.log(this.maria.board.toFEN());
+			console.log(this.maria.games.get(gameId).board.toFEN());
 		});
 	}
 
-	nextMove(move: string) {
+	nextMove(gameId: string, move: string) {
 
-		// TODO: Make a Move Object!
-		// TODO: Validate move!
-		// TODO: Keep track of the moves!
+		new Move(this.maria.games.get(gameId).board, move);
 
-		let promotion = UCIUtility.moveIsPromotion(move)
-			? UCIUtility.moveGetPromotion(move)
-			: null;
-
-		if (promotion) {
-			// do promotion stuff;
-		}
-
-		const from = UCIUtility.moveFrom(move);
-		const to = UCIUtility.moveTo(move);
-
-		const piece = this.maria.board.squares[Board.coord[from]];
-		this.maria.board.squares[Board.coord[from]] = null;
-		this.maria.board.squares[Board.coord[to]] = piece;
-
-		console.log(this.maria.board.toFEN());
+		console.log(this.maria.games.get(gameId).board.toFEN());
 	}
 
 	makeMove(gameId: string, move: string) {
