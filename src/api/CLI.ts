@@ -12,7 +12,7 @@ export default class CLI {
 	api: API;
 	id: string;
 
-	constructor() {
+	constructor(api: API) {
 		this.rl = require('readline').createInterface({
 			input: process.stdin,
 			output: process.stdout,
@@ -23,11 +23,12 @@ export default class CLI {
 			newGame: this.newGame.bind(this),
 			nextMove: this.nextMove.bind(this),
 		}
-	}
 
-	mount(api: API) :void {
 		this.id = require('crypto').randomBytes(4).toString('hex');
 		this.api = api;
+	}
+
+	mount() :void {
 		this.rl.on('line', this.parseMessage.bind(this));
 	}
 

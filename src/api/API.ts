@@ -23,16 +23,15 @@ export default class API extends Events {
 	constructor(maria: MariaChess) {
 		super();
 		this.maria = maria;
-		this.cli = new CLI();
+		this.cli = new CLI(this);
 		this.lichessAPI = new LichessAPI();
 	}
 
 	mount() {
 		this.on('newGame', this.newGame);
 		this.on('nextMove', this.nextMove);
-		this.on('drawOffer', this.declineDraw);
 
-		this.cli.mount(this);
+		this.cli.mount();
 	}
 
 	newGame(gameId: string, FEN?: string): void {
@@ -58,11 +57,13 @@ export default class API extends Events {
 
 		new Move(this.maria.games.get(gameId).board, move);
 
+		this.maria.games.get(gameId).board.getMoves(1);
+
 		console.log(this.maria.games.get(gameId).board.toFEN());
 	}
 
 	makeMove(gameId: string, move: string) {
-
+		// ...what again was the difference between makeMove and nextMove?
 	}
 
 	offerDraw(gameId: string) {

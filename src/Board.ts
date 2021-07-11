@@ -1,5 +1,6 @@
 import Piece from './Piece';
 import Move from './Move';
+import MoveGenerator from './MoveGenerator';
 import CastlingRights from './interfaces/CastlingRights';
 import Moves from './interfaces/Moves';
 import Coordinates from './interfaces/Coordinates';
@@ -15,6 +16,9 @@ export default class Board implements Moves {
 		white: CastlingRights,
 		black: CastlingRights,
 	};
+	private moveGen: MoveGenerator;
+	readonly getMoves: Function;
+
 	static readonly startposFEN: string = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
 	static readonly fileNames: string = 'abcdefgh';
 	static readonly rankNames: string = '87654321'; // revers direction makes things easier because FEN starts at a8
@@ -40,6 +44,8 @@ export default class Board implements Moves {
 			white: { kingSide: false, queenSide: false },
 			black: { kingSide: false, queenSide: false },
 		};
+		this.moveGen = new MoveGenerator(this);
+		this.getMoves = this.moveGen.getMoves.bind(this.moveGen);
 	}
 
 	static SquareToAlgebraic(square: number): string {

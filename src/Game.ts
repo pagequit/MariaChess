@@ -11,4 +11,8 @@ export default class Game {
 		this.data = data;
 		this.moves = [];
 	}
+
+	toPGN(): String {
+		return 'PGN';
+	}
 }
