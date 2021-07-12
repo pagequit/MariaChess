@@ -56,10 +56,13 @@ export default class API extends Events {
 	nextMove(gameId: string, move: string) {
 
 		new Move(this.maria.games.get(gameId).board, move);
-
-		this.maria.games.get(gameId).board.getMoves(1);
-
 		console.log(this.maria.games.get(gameId).board.toFEN());
+
+		const moves = this.maria.games.get(gameId).board.getMoves(1);
+
+		moves[0].forEach((move: number) => {
+			console.log(Board.SquareToAlgebraic(move));
+		});
 	}
 
 	makeMove(gameId: string, move: string) {

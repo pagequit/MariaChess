@@ -23,9 +23,6 @@ export default class Move implements Moves {
 	};
 
 	constructor(board: Board, move: string) {
-
-		// TODO: Validate move!
-
 		this.isPromotion = UCIUtility.moveIsPromotion(move)
 		if (this.isPromotion) {
 			const char = UCIUtility.moveGetPromotion(move);
