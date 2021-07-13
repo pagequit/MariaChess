@@ -10,18 +10,20 @@ export default class MoveGenerator {
 		this.board = board;
 		this.moveMap = {
 			[1]: (piece: number, square: number): Array<number> => { // p
-				const black: boolean = !!(Piece.GetColor(piece) >> 4);
+				const isWhite: boolean = !(Piece.GetColor(piece) >> 4);
 				const targets: Array<number> = [];
 
-				black
-					? targets.push(square + 8)
-					: targets.push(square - 8);
-
-				if (black && square > 7 && square < 16) {
-					targets.push(square + 16)
+				if (isWhite) {
+					targets.push(square - 8)
+					if (square > 47 && square < 56) {
+						targets.push(square - 16)
+					}
 				}
-				else if (square > 47 && square < 56) {
-					targets.push(square - 16)
+				else {
+					targets.push(square + 8);
+						if (square > 7 && square < 16) {
+							targets.push(square + 16)
+					}
 				}
 
 				// TODO: en passant
