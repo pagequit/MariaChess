@@ -14,18 +14,19 @@ export default class MoveGenerator {
 				const targets: Array<number> = [];
 
 				if (isWhite) {
-					targets.push(square - 8)
+					!this.board.squares[square - 8] && targets.push(square - 8);
 					if (square > 47 && square < 56) {
-						targets.push(square - 16)
+						!this.board.squares[square - 16] && targets.push(square - 16);
 					}
 				}
 				else {
-					targets.push(square + 8);
-						if (square > 7 && square < 16) {
-							targets.push(square + 16)
+					!this.board.squares[square + 8] && targets.push(square + 8);
+					if (square > 7 && square < 16) {
+						!this.board.squares[square + 16] && targets.push(square + 16);
 					}
 				}
 
+				// TODO: capture
 				// TODO: en passant
 
 				return targets;

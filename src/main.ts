@@ -3,11 +3,4 @@ import MariaChess from './MariaChess';
 
 const maria: MariaChess = new MariaChess();
 
-// try {
-// 	maria.board.load('rnbqkbnr/ppppp1pp/8/8/4Pp2/5P2/PPPP2PP/RNBQKBNR b KQkq e3 0 1');
-// }
-// catch (error) {
-// 	console.error(error);
-// }
-
 maria.api.mount();
