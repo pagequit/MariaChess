@@ -51,6 +51,9 @@ export default class Move implements Moves {
 		// - Promotion
 
 		const piece = board.squares[Board.coord[this.from]];
+
+		this.whiteToMove = Piece.GetColor(piece) !== Piece.White;
+
 		board.squares[Board.coord[this.from]] = null;
 		board.squares[Board.coord[this.to]] = piece;
 

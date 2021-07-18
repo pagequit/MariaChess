@@ -9,17 +9,33 @@ export default class MoveGenerator {
 	constructor(board: Board) {
 		this.board = board;
 		this.moveMap = {
-			[1]: (piece: number, square: number): Array<number> => { // p
-				const isWhite: boolean = !(Piece.GetColor(piece) >> 4);
+			[1]: (piece: number, square: number, activeColor: number): Array<number> => { // p
 				const targets: Array<number> = [];
+				const isWhite: boolean = Piece.GetColor(piece) === Piece.White;
 
-				if (isWhite) {
+				if (isWhite && activeColor === Piece.White) {
+					this.board.squares[square - 7]
+						&& Piece.GetColor(this.board.squares[square - 7]) !== activeColor
+						&& targets.push(square - 7);
+
+					this.board.squares[square - 9]
+						&& Piece.GetColor(this.board.squares[square - 9]) !== activeColor
+						&& targets.push(square - 9);
+
 					!this.board.squares[square - 8] && targets.push(square - 8);
 					if (square > 47 && square < 56) {
 						!this.board.squares[square - 16] && targets.push(square - 16);
 					}
 				}
-				else {
+				else if (!isWhite && activeColor === Piece.Black) {
+					this.board.squares[square + 7]
+						&& Piece.GetColor(this.board.squares[square + 7]) !== activeColor
+						&& targets.push(square + 7);
+
+					this.board.squares[square + 9]
+						&& Piece.GetColor(this.board.squares[square + 9]) !== activeColor
+						&& targets.push(square + 9);
+
 					!this.board.squares[square + 8] && targets.push(square + 8);
 					if (square > 7 && square < 16) {
 						!this.board.squares[square + 16] && targets.push(square + 16);
@@ -54,22 +70,19 @@ export default class MoveGenerator {
 		};
 	}
 
-	getMoves(iterations: number): Array<Array<number>> {
+	getMoves(activeColor: number): Array<number> {
+		let moves: Array<number> = [];
 
-		const moves = [];
-		while (iterations-- > 0) {
-			let i_moves: Array<number> = [];
+		for (let squareIndex = 0; squareIndex < this.board.squares.length; squareIndex++) {
+			if (this.board.squares[squareIndex]) {
+				const result = this.moveMap[
+					Piece.GetType(this.board.squares[squareIndex])
+				](this.board.squares[squareIndex], squareIndex, activeColor);
 
-			for (let i = 0; i < this.board.squares.length; i++) {
-				if (this.board.squares[i]) {
-					const result = this.moveMap[Piece.GetType(this.board.squares[i])](this.board.squares[i], i);
-					if (result.length > 0) {
-						i_moves = i_moves.concat(result);
-					}
+				if (result.length > 0) {
+					moves = moves.concat(result);
 				}
 			}
-
-			moves.push(i_moves);
 		}
 
 		return moves;
