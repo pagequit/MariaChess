@@ -1,27 +1,25 @@
 {
   "name": "mariachess",
   "version": "0.0.3",
-  "description": "",
+  "description": "MariaChess",
   "main": "dist/main.js",
-  "author": "Schluffe",
+  "author": "pagequit.net",
   "license": "MIT",
   "devDependencies": {
     "@babel/core": "^7.14.6",
     "@babel/preset-env": "^7.14.7",
     "@babel/preset-typescript": "^7.14.5",
-    "@rollup/plugin-typescript": "^8.2.3",
     "@types/jest": "^26.0.24",
     "@types/node": "^16.3.3",
     "babel-jest": "^27.0.6",
     "jest": "^27.0.6",
-    "rollup": "^2.53.2",
     "ts-node": "^10.1.0",
     "tslib": "^2.3.0",
     "typescript": "^4.3.5"
   },
   "scripts": {
-    "build": "rollup --config",
-    "dev": "rollup --config -w",
+    "build": "tsc",
+    "dev": "tsc --watch",
     "test": "jest"
   }
 }
