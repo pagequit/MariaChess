@@ -104,6 +104,7 @@ export default class Board implements Moves {
 			throw new Error('Invalid FEN: Invalid fullmove number!');
 		}
 
+		this.squares = new Array(64);
 		for (let rowCount: number = 0; rowCount < rowCountReference; rowCount++) {
 			fileCount = 0;
 			for (let char of rows[rowCount][0]) {
@@ -155,7 +156,7 @@ export default class Board implements Moves {
 	toFEN(): string {
 		let FEN: string = '';
 		let nextOffset: number = 0;
-		let lastFile = false;
+		let lastFile: boolean = false;
 
 		for (let i: number = 0; i <= this.squares.length; i++) {
 			lastFile = !((i + 1) % 8);
@@ -185,18 +186,24 @@ export default class Board implements Moves {
 
 		FEN += this.whiteToMove ? ' w ' : ' b ';
 
+		let castlingRights: string = '';
 		if (this.castlingRights.white.kingSide) {
-			FEN += 'K'
+			castlingRights += 'K';
 		}
 		if (this.castlingRights.white.queenSide) {
-			FEN += 'Q'
+			castlingRights += 'Q';
 		}
 		if (this.castlingRights.black.kingSide) {
-			FEN += 'k'
+			castlingRights += 'k';
 		}
 		if (this.castlingRights.black.queenSide) {
-			FEN += 'q'
+			castlingRights += 'q';
 		}
+		if (castlingRights.length === 0) {
+			castlingRights = '-';
+		}
+
+		FEN += castlingRights;
 
 		FEN += this.enPassant >= 0
 			? ' ' + Board.SquareToAlgebraic(this.enPassant)
