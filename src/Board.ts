@@ -55,6 +55,18 @@ export default class Board implements Moves {
 		return algebraic;
 	}
 
+	applyMove(move: Move) {
+		this.squares[Board.coord[move.from]] = undefined;
+		this.squares[Board.coord[move.to]] = move.piece;
+		this.whiteToMove = move.whiteToMove;
+		this.enPassant = move.enPassant;
+		this.halfmoveClock = move.halfmoveClock;
+		this.fullmoveNumber = move.fullmoveNumber;
+		this.castlingRights = move.castlingRights;
+
+		this.moves.push(move);
+	}
+
 	reset(): void {
 		this.load(Board.startposFEN);
 	}

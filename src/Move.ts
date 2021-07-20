@@ -8,10 +8,13 @@ export default class Move implements Moves {
 	from: string;
 	to: string;
 	isCapture: boolean;
+	isEnPassant: boolean;
 	captureSquare: number;
 	capturePiece: number;
 	isPromotion: boolean;
 	promotionPiece: number;
+	piece: number;
+	previousMove: Move;
 
 	whiteToMove: boolean;
 	enPassant: number;
@@ -23,7 +26,21 @@ export default class Move implements Moves {
 	};
 
 	constructor(board: Board, move: string) {
-		this.isPromotion = UCIUtility.moveIsPromotion(move)
+		this.whiteToMove = !board.whiteToMove;
+		this.halfmoveClock = board.halfmoveClock + 1;
+		this.fullmoveNumber = board.fullmoveNumber;
+		this.fullmoveNumber += this.whiteToMove ? 1 : 0;
+
+		this.from = UCIUtility.moveFrom(move);
+		this.to = UCIUtility.moveTo(move);
+		this.isPromotion = UCIUtility.moveIsPromotion(move);
+
+		this.piece = board.squares[Board.coord[this.from]];
+		this.previousMove = board.moves[board.moves.length -1];
+
+		this.enPassant = board.enPassant;
+		this.castlingRights = board.castlingRights;
+
 		if (this.isPromotion) {
 			const char = UCIUtility.moveGetPromotion(move);
 			const transChar =  char.toLowerCase();
@@ -41,22 +58,10 @@ export default class Move implements Moves {
 			}[transChar];
 		}
 
-		this.from = UCIUtility.moveFrom(move);
-		this.to = UCIUtility.moveTo(move);
-
 		// TODO:
 		// - Capture
 		// - En Passant
 		// - Castling
 		// - Promotion
-
-		const piece = board.squares[Board.coord[this.from]];
-
-		this.whiteToMove = Piece.GetColor(piece) !== Piece.White;
-
-		board.squares[Board.coord[this.from]] = null;
-		board.squares[Board.coord[this.to]] = piece;
-
-		board.moves.push(this);
 	}
 }

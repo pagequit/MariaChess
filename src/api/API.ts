@@ -58,9 +58,9 @@ export default class API extends Events {
 		const board = this.maria.games.get(gameId).board;
 		const activeColor = board.whiteToMove
 			? Piece.Black
-			:	Piece.White;
+			: Piece.White;
 
-		new Move(board, move);
+		board.applyMove(new Move(board, move))
 
 		console.log(board.toFEN());
 
