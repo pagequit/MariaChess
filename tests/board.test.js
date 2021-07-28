@@ -21,3 +21,21 @@ test('FEN #2', () => {
 
 	expect(board.toFEN()).toEqual(startposFEN);
 });
+
+test('Moves #1', () => {
+	const board = new Board();
+	board.reset();
+
+	expect(board.getMoves().length).toEqual(20);
+});
+
+test('En passant #1', () => {
+	const board = new Board();
+	board.load('4k3/8/8/4Pp2/8/8/8/4K3 w - f6 0 1');
+
+	const f6 = 20;
+	const e6 = 21
+
+	expect(board.getMoves().length).toEqual(2);
+	expect(board.getMoves().filter(m => m === f6 || e6).length).toEqual(2);
+});

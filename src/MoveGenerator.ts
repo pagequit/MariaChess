@@ -1,6 +1,5 @@
 import Board from "./Board";
 import Piece from "./Piece";
-import Move from "./Move";
 
 export default class MoveGenerator {
 	board: Board;
@@ -9,41 +8,35 @@ export default class MoveGenerator {
 	constructor(board: Board) {
 		this.board = board;
 		this.moveMap = {
-			[1]: (piece: number, square: number, activeColor: number): Array<number> => { // p
+			// --- Pawn ---
+			[1]: (piece: number, square: number, activeColor: number): Array<number> => {
 				const targets: Array<number> = [];
 				const isWhite: boolean = Piece.GetColor(piece) === Piece.White;
-
-				if (isWhite && activeColor === Piece.White) {
-					this.board.squares[square - 7]
-						&& Piece.GetColor(this.board.squares[square - 7]) !== activeColor
-						&& targets.push(square - 7);
-
-					this.board.squares[square - 9]
-						&& Piece.GetColor(this.board.squares[square - 9]) !== activeColor
-						&& targets.push(square - 9);
-
-					!this.board.squares[square - 8] && targets.push(square - 8);
-					if (square > 47 && square < 56) {
-						!this.board.squares[square - 16] && targets.push(square - 16);
-					}
+				const sign: string = isWhite ? '-' : '+';
+				const calc: any = {
+					['+']: (a: number, b: number) => a + b,
+					['-']: (a: number, b: number) => a - b,
 				}
-				else if (!isWhite && activeColor === Piece.Black) {
-					this.board.squares[square + 7]
-						&& Piece.GetColor(this.board.squares[square + 7]) !== activeColor
-						&& targets.push(square + 7);
 
-					this.board.squares[square + 9]
-						&& Piece.GetColor(this.board.squares[square + 9]) !== activeColor
-						&& targets.push(square + 9);
+				this.board.squares[calc[sign](square, 7)]
+					&& Piece.GetColor(this.board.squares[calc[sign](square, 7)]) !== activeColor
+					&& targets.push(calc[sign](square, 7));
 
-					!this.board.squares[square + 8] && targets.push(square + 8);
-					if (square > 7 && square < 16) {
-						!this.board.squares[square + 16] && targets.push(square + 16);
+				this.board.squares[calc[sign](square, 9)]
+					&& Piece.GetColor(this.board.squares[calc[sign](square, 9)]) !== activeColor
+					&& targets.push(calc[sign](square, 9));
+
+				if (!this.board.squares[calc[sign](square, 8)]) {
+					targets.push(calc[sign](square, 8));
+
+					if ((square > 47 && square < 56) || (square > 7 && square < 16)) {
+						!this.board.squares[calc[sign](square, 16)] && targets.push(calc[sign](square, 16));
 					}
 				}
 
 				// TODO: capture
 				// TODO: en passant
+				// TODO: boundaries >.<
 
 				return targets;
 			},
@@ -70,20 +63,13 @@ export default class MoveGenerator {
 		};
 	}
 
-	getMoves(activeColor: number): Array<number> {
+	getMoves(): Array<number> {
 		let moves: Array<number> = [];
-
-		for (let squareIndex = 0; squareIndex < this.board.squares.length; squareIndex++) {
-			if (this.board.squares[squareIndex]) {
-				const result = this.moveMap[
-					Piece.GetType(this.board.squares[squareIndex])
-				](this.board.squares[squareIndex], squareIndex, activeColor);
-
-				if (result.length > 0) {
-					moves = moves.concat(result);
-				}
-			}
-		}
+		this.board.pieces[this.board.whiteToMove ? 'white' : 'black'].forEach((piece, square) => {
+			moves = moves.concat(
+				this.moveMap[Piece.GetType(piece)](piece, square, this.board.activeColor)
+			);
+		});
 
 		return moves;
 	}

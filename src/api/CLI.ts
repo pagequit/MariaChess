@@ -1,10 +1,10 @@
 import { ReadLine } from 'node:readline';
 import API from './API';
+import Board from '../Board';
 
 interface Actions {
 	[name: string]: Function,
 }
-
 
 export default class CLI {
 	rl: ReadLine;
@@ -22,6 +22,7 @@ export default class CLI {
 			quit: this.quit.bind(this),
 			newGame: this.newGame.bind(this),
 			nextMove: this.nextMove.bind(this),
+			printMoves: this.printMoves.bind(this),
 		}
 
 		this.id = require('crypto').randomBytes(4).toString('hex');
@@ -51,7 +52,7 @@ export default class CLI {
 		});
 	}
 
-	quit(args: Array<string>): void {
+	quit(): void {
 		this.rl.close();
 	}
 
@@ -63,5 +64,13 @@ export default class CLI {
 	nextMove(args: Array<string>): void {
 		const move: string = args[0];
 		this.api.emit('nextMove', this.id, move);
+	}
+
+	printMoves(): void {
+		const board: Board = this.api.maria.games.get(this.id).board;
+
+		board.getMoves().forEach((move: number) => {
+			console.log(Board.SquareToAlgebraic(move));
+		});
 	}
 }

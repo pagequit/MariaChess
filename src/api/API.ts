@@ -4,10 +4,8 @@ import LichessAPI from './LichessAPI';
 import Board from '../Board';
 import Game from '../Game';
 import Move from '../Move';
-import Piece from '../Piece';
 
 const Events = require('events');
-
 
 /*
  * TODO: think about
@@ -56,19 +54,10 @@ export default class API extends Events {
 
 	nextMove(gameId: string, move: string) {
 		const board = this.maria.games.get(gameId).board;
-		const activeColor = board.whiteToMove
-			? Piece.Black
-			: Piece.White;
 
 		board.applyMove(new Move(board, move))
 
 		console.log(board.toFEN());
-
-		const moves = board.getMoves(activeColor);
-
-		moves.forEach((move: number) => {
-			console.log(Board.SquareToAlgebraic(move));
-		});
 	}
 
 	makeMove(gameId: string, move: string) {

@@ -16,6 +16,11 @@ export default class Board implements Moves {
 		white: CastlingRights,
 		black: CastlingRights,
 	};
+	pieces: {
+		white: Map<number, number>,
+		black: Map<number, number>,
+	}
+
 	private moveGen: MoveGenerator;
 	readonly getMoves: Function;
 
@@ -44,6 +49,11 @@ export default class Board implements Moves {
 			white: { kingSide: false, queenSide: false },
 			black: { kingSide: false, queenSide: false },
 		};
+		this.pieces = {
+			white: new Map(),
+			black: new Map(),
+		}
+
 		this.moveGen = new MoveGenerator(this);
 		this.getMoves = this.moveGen.getMoves.bind(this.moveGen);
 	}
@@ -53,6 +63,12 @@ export default class Board implements Moves {
 		algebraic += Board.rankNames[(square >> 3)];
 
 		return algebraic;
+	}
+
+	get activeColor(): number {
+		return this.whiteToMove
+			? Piece.White
+			: Piece.Black;
 	}
 
 	applyMove(move: Move) {
@@ -163,6 +179,14 @@ export default class Board implements Moves {
 
 		this.halfmoveClock = parseInt(sections[4][0]);
 		this.fullmoveNumber = parseInt(sections[5][0]);
+
+		for (let i = 0; i < this.squares.length; i++) {
+			Piece.GetColor(this.squares[i]) === Piece.White
+				&& this.pieces.white.set(i, this.squares[i]);
+
+			Piece.GetColor(this.squares[i]) === Piece.Black
+				&& this.pieces.black.set(i, this.squares[i]);
+		}
 	}
 
 	toFEN(): string {
