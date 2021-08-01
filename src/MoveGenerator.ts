@@ -18,13 +18,23 @@ export default class MoveGenerator {
 					['-']: (a: number, b: number) => a - b,
 				}
 
-				this.board.squares[calc[sign](square, 7)]
+				Board.getOffsetLeft(this.board.squares[calc[sign](square, 7)]) > 0
+					&& this.board.squares[calc[sign](square, 7)]
 					&& Piece.GetColor(this.board.squares[calc[sign](square, 7)]) !== activeColor
 					&& targets.push(calc[sign](square, 7));
 
-				this.board.squares[calc[sign](square, 9)]
+				Board.getOffsetRight(this.board.squares[calc[sign](square, 9)]) > 0
+					&& this.board.squares[calc[sign](square, 9)]
 					&& Piece.GetColor(this.board.squares[calc[sign](square, 9)]) !== activeColor
 					&& targets.push(calc[sign](square, 9));
+
+				if (this.board.enPassant >= 0) {
+					calc[sign](square, 7) === this.board.enPassant
+						&& targets.push(calc[sign](square, 7));
+
+					calc[sign](square, 9) === this.board.enPassant
+						&& targets.push(calc[sign](square, 9));
+				}
 
 				if (!this.board.squares[calc[sign](square, 8)]) {
 					targets.push(calc[sign](square, 8));

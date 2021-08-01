@@ -65,6 +65,22 @@ export default class Board implements Moves {
 		return algebraic;
 	}
 
+	static getOffsetLeft(square: number): number {
+		return -(square % 8);
+	}
+
+	static getOffsetRight(square: number): number {
+		return Board.getOffsetLeft(square) - 1 + 8;
+	}
+
+	static getOffsetTop(square: number): number {
+		return Math.floor((64 - square) / 8);
+	}
+
+	static getOffsetBottom(square: number): number {
+		return Board.getOffsetTop(square) + 1 - 8;
+	}
+
 	get activeColor(): number {
 		return this.whiteToMove
 			? Piece.White

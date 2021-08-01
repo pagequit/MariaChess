@@ -34,8 +34,20 @@ test('En passant #1', () => {
 	board.load('4k3/8/8/4Pp2/8/8/8/4K3 w - f6 0 1');
 
 	const f6 = 20;
-	const e6 = 21
+	const e6 = 21;
 
 	expect(board.getMoves().length).toEqual(2);
 	expect(board.getMoves().filter(m => m === f6 || e6).length).toEqual(2);
+});
+
+test('Pawn capture #1', () => {
+	const board = new Board();
+	board.load('4k3/8/8/4Pp2/8/6pp/n6P/4K3 w - f6 0 1');
+
+	const f6 = 20;
+	const e6 = 21;
+	const g3 = 45;
+
+	expect(board.getMoves().length).toEqual(3);
+	expect(board.getMoves().filter(m => m === f6 || e6 || g3).length).toEqual(3);
 });
