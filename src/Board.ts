@@ -197,6 +197,8 @@ export default class Board implements Moves {
 		this.halfmoveClock = parseInt(sections[4][0]);
 		this.fullmoveNumber = parseInt(sections[5][0]);
 
+		this.pieces.white.clear();
+		this.pieces.black.clear();
 		for (let i = 0; i < this.squares.length; i++) {
 			Piece.GetColor(this.squares[i]) === Piece.White
 				&& this.pieces.white.set(i, this.squares[i]);
