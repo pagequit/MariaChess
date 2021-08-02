@@ -26,7 +26,8 @@ export default class Board implements Moves {
 
 	static readonly startposFEN: string = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
 	static readonly fileNames: string = 'abcdefgh';
-	static readonly rankNames: string = '87654321'; // revers direction makes things easier because FEN starts at a8
+	static readonly rankNames: string = '87654321'; // revers direction because FEN starts at a8
+
 	// Board.coord.a8 = 0 ... Board.coord.h1 = 63;
 	static readonly coord: Coordinates = (function(): Coordinates {
 		const coord: Coordinates = {};

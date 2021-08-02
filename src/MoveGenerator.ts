@@ -18,15 +18,15 @@ export default class MoveGenerator {
 					['-']: (a: number, b: number) => a - b,
 				}
 
-				Board.getOffsetLeft(this.board.squares[calc[sign](square, 7)]) > 0
-					&& this.board.squares[calc[sign](square, 7)]
-					&& Piece.GetColor(this.board.squares[calc[sign](square, 7)]) !== activeColor
-					&& targets.push(calc[sign](square, 7));
-
-				Board.getOffsetRight(this.board.squares[calc[sign](square, 9)]) > 0
+				Board.getOffsetLeft(square) < 0
 					&& this.board.squares[calc[sign](square, 9)]
 					&& Piece.GetColor(this.board.squares[calc[sign](square, 9)]) !== activeColor
 					&& targets.push(calc[sign](square, 9));
+
+				Board.getOffsetRight(square) > 0
+					&& this.board.squares[calc[sign](square, 7)]
+					&& Piece.GetColor(this.board.squares[calc[sign](square, 7)]) !== activeColor
+					&& targets.push(calc[sign](square, 7));
 
 				if (this.board.enPassant >= 0) {
 					calc[sign](square, 7) === this.board.enPassant
@@ -50,9 +50,20 @@ export default class MoveGenerator {
 
 				return targets;
 			},
-			[2]: (piece: number, square: number): Array<number> => { // n
-				//console.log(Piece.GetPrinable(piece));
-				return [];
+			// --- Knight ---
+			[2]: (piece: number, square: number): Array<number> => {
+				// +/-17 +/-15 +/-10 +/-6
+				// 4k3/8/8/8/8/8/8/N3K3 w - f6 0 1
+				// 4k3/8/8/8/8/8/8/1N2K3 w - f6 0 1
+				const targets: Array<number> = [];
+				const isWhite: boolean = Piece.GetColor(piece) === Piece.White;
+
+				let isAtBorderLeft: boolean = Board.getOffsetRight(square) > 0;
+				let isAtBorderTop: boolean;
+				let isAtBorderRight: boolean;
+				let isAtBorderBottom: boolean;
+
+				return targets;
 			},
 			[3]: (piece: number, square: number): Array<number> => { // b
 				// console.log(Piece.GetPrinable(piece));
