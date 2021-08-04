@@ -44,24 +44,26 @@ export default class MoveGenerator {
 					}
 				}
 
-				// TODO: capture
-				// TODO: en passant
-				// TODO: boundaries >.<
-
 				return targets;
 			},
 			// --- Knight ---
 			[2]: (piece: number, square: number): Array<number> => {
-				// +/-17 +/-15 +/-10 +/-6
-				// 4k3/8/8/8/8/8/8/N3K3 w - f6 0 1
-				// 4k3/8/8/8/8/8/8/1N2K3 w - f6 0 1
 				const targets: Array<number> = [];
 				const isWhite: boolean = Piece.GetColor(piece) === Piece.White;
+				const calc: any = {
+					[0]: (a: number, b: number) => a + b,
+					[1]: (a: number, b: number) => a - b,
+				}
+				const squares: Array<number> = [17, 15, 10, 6];
 
-				let isAtBorderLeft: boolean = Board.getOffsetRight(square) > 0;
-				let isAtBorderTop: boolean;
-				let isAtBorderRight: boolean;
-				let isAtBorderBottom: boolean;
+				for (var sign = 0; sign < 2; sign++) {
+					for (var i = 0; i < 4; i++) {
+						targets.push(calc[sign](square, squares[i]));
+					}
+				}
+
+				// TODO: filter targets
+				// 4k3/8/8/8/4N3/8/8/4K3 w - f6 0 1
 
 				return targets;
 			},
