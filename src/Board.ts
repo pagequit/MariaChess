@@ -42,6 +42,7 @@ export default class Board implements Moves {
 	constructor() {
 		this.moves = [];
 		this.squares = new Array(64);
+		this.squares.fill(null);
 		this.whiteToMove = true;
 		this.enPassant = -1;
 		this.halfmoveClock = 0;
@@ -89,7 +90,7 @@ export default class Board implements Moves {
 	}
 
 	applyMove(move: Move) {
-		this.squares[Board.coord[move.from]] = undefined;
+		this.squares[Board.coord[move.from]] = null;
 		this.squares[Board.coord[move.to]] = move.piece;
 		this.whiteToMove = move.whiteToMove;
 		this.enPassant = move.enPassant;
@@ -150,6 +151,7 @@ export default class Board implements Moves {
 		}
 
 		this.squares = new Array(64);
+		this.squares.fill(null);
 		for (let rowCount: number = 0; rowCount < rowCountReference; rowCount++) {
 			fileCount = 0;
 			for (let char of rows[rowCount][0]) {

@@ -47,8 +47,8 @@ export default class MoveGenerator {
 				return targets;
 			},
 			// --- Knight ---
-			[2]: (piece: number, square: number): Array<number> => {
-				const targets: Array<number> = [];
+			[2]: (piece: number, square: number, activeColor: number): Array<number> => {
+				let targets: Array<number> = [];
 				const isWhite: boolean = Piece.GetColor(piece) === Piece.White;
 				const calc: any = {
 					[0]: (a: number, b: number) => a + b,
@@ -62,8 +62,15 @@ export default class MoveGenerator {
 					}
 				}
 
-				// TODO: filter targets
-				// 4k3/8/8/8/4N3/8/8/4K3 w - f6 0 1
+				targets = targets.filter(targetSquare => {
+					return (this.board.squares[targetSquare] === null
+						|| Piece.GetColor(this.board.squares[targetSquare]) !== activeColor)
+						&& Math.abs(Board.getOffsetLeft(square) - Board.getOffsetLeft(targetSquare)) < 3;
+				});
+
+				// 4k3/8/8/8/4N3/8/8/4K3 w - f6 0 1 ☑
+				// 4k3/8/8/8/8/8/6N1/4K3 w - f6 0 1 ☑
+				// N3k3/8/8/8/8/8/8/4K3 w - f6 0 1 ☒
 
 				return targets;
 			},
