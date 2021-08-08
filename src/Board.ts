@@ -75,12 +75,12 @@ export default class Board implements Moves {
 		return Board.getOffsetLeft(square) - 1 + 8;
 	}
 
-	static getOffsetTop(square: number): number {
+	static getOffsetBottom(square: number): number {
 		return Math.floor((64 - square) / 8);
 	}
 
-	static getOffsetBottom(square: number): number {
-		return Board.getOffsetTop(square) + 1 - 8;
+	static getOffsetTop(square: number): number {
+		return Board.getOffsetBottom(square) + 1 - 8;
 	}
 
 	get activeColor(): number {
