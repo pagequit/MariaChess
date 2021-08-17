@@ -76,7 +76,7 @@ export default class Board implements Moves {
 	}
 
 	static getOffsetBottom(square: number): number {
-		return Math.floor((64 - square) / 8);
+		return Math.floor((63 - square) / 8);
 	}
 
 	static getOffsetTop(square: number): number {

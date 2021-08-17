@@ -34,3 +34,30 @@ test('Pieces #1', () => {
 	expect(board.pieces.white.size).toEqual(2);
 	expect(board.pieces.black.size).toEqual(2);
 });
+
+test('Offsets #1', () => {
+	const targetPiece = Board.coord.a1;
+
+	expect(Board.getOffsetLeft(targetPiece)).toEqual(-0);
+	expect(Board.getOffsetTop(targetPiece)).toEqual(-7);
+	expect(Board.getOffsetRight(targetPiece)).toEqual(7);
+	expect(Board.getOffsetBottom(targetPiece)).toEqual(0);
+});
+
+test('Offsets #2', () => {
+	const targetPiece = Board.coord.h8;
+
+	expect(Board.getOffsetLeft(targetPiece)).toEqual(-7);
+	expect(Board.getOffsetTop(targetPiece)).toEqual(0);
+	expect(Board.getOffsetRight(targetPiece)).toEqual(0);
+	expect(Board.getOffsetBottom(targetPiece)).toEqual(7);
+});
+
+test('Offsets #3', () => {
+	const targetPiece = Board.coord.d5;
+
+	expect(Board.getOffsetLeft(targetPiece)).toEqual(-3);
+	expect(Board.getOffsetTop(targetPiece)).toEqual(-3);
+	expect(Board.getOffsetRight(targetPiece)).toEqual(4);
+	expect(Board.getOffsetBottom(targetPiece)).toEqual(4);
+});
