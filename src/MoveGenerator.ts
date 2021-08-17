@@ -106,7 +106,7 @@ export default class MoveGenerator {
 
 				for (var i = 0; i < directions.length; i++) {
 					for (var j = 0; j < directions[i].abs; j++) {
-						var targetSquare = square + directions[i].dir * (j + 1);
+						const targetSquare = square + directions[i].dir * (j + 1);
 						if (Piece.GetColor(this.board.squares[targetSquare]) === activeColor) {
 							break;
 						}
@@ -119,10 +119,38 @@ export default class MoveGenerator {
 			},
 			// --- Rook ---
 			[4]: (square: number, activeColor: number): Array<SimpleMoves> => {
-				let targets: Array<number> = [];
-				const directions: Array<number> = [-8, -1, 1, 8];
+				let targets: Array<SimpleMoves> = [];
+				const directions: Array<any> = [
+					{
+						dir: -8,
+						abs: Math.abs(Board.getOffsetTop(square)),
+					},
+					{
+						dir: -1,
+						abs: Math.abs(Board.getOffsetLeft(square)),
+					},
+					{
+						dir: 1,
+						abs: Math.abs(Board.getOffsetRight(square)),
+					},
+					{
+						dir: 8,
+						abs: Math.abs(Board.getOffsetBottom(square)),
+					},
+				];
 
-				return [];
+				for (var i = 0; i < directions.length; i++) {
+					for (var j = 0; j < directions[i].abs; j++) {
+						const targetSquare = square + directions[i].dir * (j + 1);
+						if (Piece.GetColor(this.board.squares[targetSquare]) === activeColor) {
+							break;
+						}
+
+						targets.push({ from: square, to: targetSquare });
+					}
+				}
+
+				return targets;
 			},
 			// --- Queen ---
 			[5]: (square: number, activeColor: number): Array<SimpleMoves> => {
