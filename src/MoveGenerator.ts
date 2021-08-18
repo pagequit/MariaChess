@@ -85,21 +85,21 @@ export default class MoveGenerator {
 						dir: -7,
 						abs: Math.min(
 							Math.abs(Board.getOffsetTop(square)),
-							Math.abs(Board.getOffsetRight(square))
+							Board.getOffsetRight(square)
 						),
 					},
 					{
 						dir: 7,
 						abs: Math.min(
-							Math.abs(Board.getOffsetRight(square)),
-							Math.abs(Board.getOffsetBottom(square))
+							Math.abs(Board.getOffsetLeft(square)),
+							Board.getOffsetBottom(square)
 						),
 					},
 					{
 						dir: 9,
 						abs: Math.min(
-							Math.abs(Board.getOffsetBottom(square)),
-							Math.abs(Board.getOffsetLeft(square))
+							Board.getOffsetBottom(square),
+							Board.getOffsetRight(square)
 						),
 					},
 				];
@@ -131,11 +131,11 @@ export default class MoveGenerator {
 					},
 					{
 						dir: 1,
-						abs: Math.abs(Board.getOffsetRight(square)),
+						abs: Board.getOffsetRight(square),
 					},
 					{
 						dir: 8,
-						abs: Math.abs(Board.getOffsetBottom(square)),
+						abs: Board.getOffsetBottom(square),
 					},
 				];
 
