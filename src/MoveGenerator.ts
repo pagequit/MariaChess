@@ -104,7 +104,8 @@ export default class MoveGenerator {
 					},
 				];
 
-				for (var i = 0; i < directions.length; i++) {
+				const dirLength = directions.length;
+				for (var i = 0; i < dirLength; i++) {
 					for (var j = 0; j < directions[i].abs; j++) {
 						const targetSquare = square + directions[i].dir * (j + 1);
 						if (Piece.GetColor(this.board.squares[targetSquare]) === activeColor) {
@@ -139,7 +140,8 @@ export default class MoveGenerator {
 					},
 				];
 
-				for (var i = 0; i < directions.length; i++) {
+				const dirLength = directions.length;
+				for (var i = 0; i < dirLength; i++) {
 					for (var j = 0; j < directions[i].abs; j++) {
 						const targetSquare = square + directions[i].dir * (j + 1);
 						if (Piece.GetColor(this.board.squares[targetSquare]) === activeColor) {
@@ -202,7 +204,8 @@ export default class MoveGenerator {
 					},
 				];
 
-				for (var i = 0; i < directions.length; i++) {
+				const dirLength = directions.length;
+				for (var i = 0; i < dirLength; i++) {
 					for (var j = 0; j < directions[i].abs; j++) {
 						const targetSquare = square + directions[i].dir * (j + 1);
 						if (Piece.GetColor(this.board.squares[targetSquare]) === activeColor) {
@@ -217,10 +220,19 @@ export default class MoveGenerator {
 			},
 			// --- King ---
 			[6]: (square: number, activeColor: number): Array<SimpleMoves> => {
-				let targets: Array<number> = [];
+				const targets: Array<SimpleMoves> = [];
 				const directions: Array<number> = [-9, -8, -7, -1, 1, 7, 8, 9];
 
-				return [];
+				for (var i = 0; i < directions.length; i++) {
+					const targetSquare = square + directions[i];
+					if (Piece.GetColor(this.board.squares[targetSquare]) !== activeColor) {
+						targets.push({ from: square, to: targetSquare });
+					}
+				}
+
+				// TODO: castle
+
+				return targets;
 			},
 		};
 	}
