@@ -22,7 +22,7 @@ test('Pawn #1 [move]', () => {
 	moves = board.getMoves();
 	expectedMoves = [
 		{ from: Board.coord.e2, to: Board.coord.e3 },
-	]
+	];
 
 	expect(moves.length).toEqual(expectedMoves.length);
 	expectedMoves.forEach(move => {

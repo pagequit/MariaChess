@@ -73,7 +73,7 @@ test('Rook #3 [blocked]', () => {
 		{ from: Board.coord.a1, to: Board.coord.f1 },
 		{ from: Board.coord.a1, to: Board.coord.g1 },
 		{ from: Board.coord.a1, to: Board.coord.h1 },
-	]
+	];
 
 	expect(moves.length).toEqual(expectedMoves.length);
 	expectedMoves.forEach(move => {
