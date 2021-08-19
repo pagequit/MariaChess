@@ -72,7 +72,7 @@ export default class MoveGenerator {
 			},
 			// --- Bishop ---
 			[3]: (square: number, activeColor: number): Array<SimpleMoves> => {
-				let targets: Array<SimpleMoves> = [];
+				const targets: Array<SimpleMoves> = [];
 				const directions: Array<any> = [
 					{
 						dir: -9,
@@ -119,7 +119,7 @@ export default class MoveGenerator {
 			},
 			// --- Rook ---
 			[4]: (square: number, activeColor: number): Array<SimpleMoves> => {
-				let targets: Array<SimpleMoves> = [];
+				const targets: Array<SimpleMoves> = [];
 				const directions: Array<any> = [
 					{
 						dir: -8,
@@ -154,10 +154,66 @@ export default class MoveGenerator {
 			},
 			// --- Queen ---
 			[5]: (square: number, activeColor: number): Array<SimpleMoves> => {
-				let targets: Array<number> = [];
-				const directions: Array<number> = [-9, -8, -7, -1, 1, 7, 8, 9];
+				const targets: Array<SimpleMoves> = [];
+				const directions: Array<any> = [
+					{
+						dir: -8,
+						abs: Math.abs(Board.getOffsetTop(square)),
+					},
+					{
+						dir: -1,
+						abs: Math.abs(Board.getOffsetLeft(square)),
+					},
+					{
+						dir: 1,
+						abs: Board.getOffsetRight(square),
+					},
+					{
+						dir: 8,
+						abs: Board.getOffsetBottom(square),
+					},
+					{
+						dir: -9,
+						abs: Math.min(
+							Math.abs(Board.getOffsetLeft(square)),
+							Math.abs(Board.getOffsetTop(square))
+						),
+					},
+					{
+						dir: -7,
+						abs: Math.min(
+							Math.abs(Board.getOffsetTop(square)),
+							Board.getOffsetRight(square)
+						),
+					},
+					{
+						dir: 7,
+						abs: Math.min(
+							Math.abs(Board.getOffsetLeft(square)),
+							Board.getOffsetBottom(square)
+						),
+					},
+					{
+						dir: 9,
+						abs: Math.min(
+							Board.getOffsetBottom(square),
+							Board.getOffsetRight(square)
+						),
+					},
+				];
 
-				return [];
+				for (var i = 0; i < directions.length; i++) {
+					for (var j = 0; j < directions[i].abs; j++) {
+						const targetSquare = square + directions[i].dir * (j + 1);
+						if (Piece.GetColor(this.board.squares[targetSquare]) === activeColor) {
+							break;
+						}
+
+						targets.push({ from: square, to: targetSquare });
+					}
+				}
+
+				return targets;
 			},
 			// --- King ---
 			[6]: (square: number, activeColor: number): Array<SimpleMoves> => {
