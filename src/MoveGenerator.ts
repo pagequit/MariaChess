@@ -113,6 +113,10 @@ export default class MoveGenerator {
 						}
 
 						targets.push({ from: square, to: targetSquare });
+
+						if (this.board.squares[targetSquare]) {
+							break;
+						}
 					}
 				}
 
@@ -149,6 +153,10 @@ export default class MoveGenerator {
 						}
 
 						targets.push({ from: square, to: targetSquare });
+
+						if (this.board.squares[targetSquare]) {
+							break;
+						}
 					}
 				}
 
@@ -213,6 +221,10 @@ export default class MoveGenerator {
 						}
 
 						targets.push({ from: square, to: targetSquare });
+
+						if (this.board.squares[targetSquare]) {
+							break;
+						}
 					}
 				}
 
