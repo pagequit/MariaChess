@@ -10,9 +10,9 @@ export default class MoveGenerator {
 		this.board = board;
 		this.moveMap = {
 			// --- Pawn ---
-			[1]: (square: number, activeColor: number): Array<SimpleMoves> => {
+			[1]: (square: number): Array<SimpleMoves> => {
 				const targets: Array<SimpleMoves> = [];
-				const sign: string = activeColor === Piece.White ? '-' : '+';
+				const sign: string = this.board.activeColor === Piece.White ? '-' : '+';
 				const calc: any = {
 					['+']: (a: number, b: number) => a + b,
 					['-']: (a: number, b: number) => a - b,
@@ -20,12 +20,12 @@ export default class MoveGenerator {
 
 				Board.getOffsetLeft(square) < 0
 					&& this.board.squares[calc[sign](square, 9)]
-					&& Piece.GetColor(this.board.squares[calc[sign](square, 9)]) !== activeColor
+					&& Piece.GetColor(this.board.squares[calc[sign](square, 9)]) !== this.board.activeColor
 					&& targets.push({ from: square, to: calc[sign](square, 9) });
 
 				Board.getOffsetRight(square) > 0
 					&& this.board.squares[calc[sign](square, 7)]
-					&& Piece.GetColor(this.board.squares[calc[sign](square, 7)]) !== activeColor
+					&& Piece.GetColor(this.board.squares[calc[sign](square, 7)]) !== this.board.activeColor
 					&& targets.push({ from: square, to: calc[sign](square, 7) });
 
 				if (this.board.enPassant >= 0) {
@@ -48,7 +48,7 @@ export default class MoveGenerator {
 				return targets;
 			},
 			// --- Knight ---
-			[2]: (square: number, activeColor: number): Array<SimpleMoves> => {
+			[2]: (square: number): Array<SimpleMoves> => {
 				let targets: Array<SimpleMoves> = [];
 				const calc: any = {
 					[0]: (a: number, b: number) => a + b,
@@ -64,14 +64,14 @@ export default class MoveGenerator {
 
 				targets = targets.filter(({ to }) => {
 					return this.board.squares[to] !== undefined && (this.board.squares[to] === null
-						|| Piece.GetColor(this.board.squares[to]) !== activeColor)
+						|| Piece.GetColor(this.board.squares[to]) !== this.board.activeColor)
 						&& Math.abs(Board.getOffsetLeft(square) - Board.getOffsetLeft(to)) < 3;
 				});
 
 				return targets;
 			},
 			// --- Bishop ---
-			[3]: (square: number, activeColor: number): Array<SimpleMoves> => {
+			[3]: (square: number): Array<SimpleMoves> => {
 				const targets: Array<SimpleMoves> = [];
 				const directions: Array<any> = [
 					{
@@ -108,7 +108,7 @@ export default class MoveGenerator {
 				for (var i = 0; i < dirLength; i++) {
 					for (var j = 0; j < directions[i].abs; j++) {
 						const targetSquare = square + directions[i].dir * (j + 1);
-						if (Piece.GetColor(this.board.squares[targetSquare]) === activeColor) {
+						if (Piece.GetColor(this.board.squares[targetSquare]) === this.board.activeColor) {
 							break;
 						}
 
@@ -123,7 +123,7 @@ export default class MoveGenerator {
 				return targets;
 			},
 			// --- Rook ---
-			[4]: (square: number, activeColor: number): Array<SimpleMoves> => {
+			[4]: (square: number): Array<SimpleMoves> => {
 				const targets: Array<SimpleMoves> = [];
 				const directions: Array<any> = [
 					{
@@ -148,7 +148,7 @@ export default class MoveGenerator {
 				for (var i = 0; i < dirLength; i++) {
 					for (var j = 0; j < directions[i].abs; j++) {
 						const targetSquare = square + directions[i].dir * (j + 1);
-						if (Piece.GetColor(this.board.squares[targetSquare]) === activeColor) {
+						if (Piece.GetColor(this.board.squares[targetSquare]) === this.board.activeColor) {
 							break;
 						}
 
@@ -163,7 +163,7 @@ export default class MoveGenerator {
 				return targets;
 			},
 			// --- Queen ---
-			[5]: (square: number, activeColor: number): Array<SimpleMoves> => {
+			[5]: (square: number): Array<SimpleMoves> => {
 				const targets: Array<SimpleMoves> = [];
 				const directions: Array<any> = [
 					{
@@ -216,7 +216,7 @@ export default class MoveGenerator {
 				for (var i = 0; i < dirLength; i++) {
 					for (var j = 0; j < directions[i].abs; j++) {
 						const targetSquare = square + directions[i].dir * (j + 1);
-						if (Piece.GetColor(this.board.squares[targetSquare]) === activeColor) {
+						if (Piece.GetColor(this.board.squares[targetSquare]) === this.board.activeColor) {
 							break;
 						}
 
@@ -231,7 +231,7 @@ export default class MoveGenerator {
 				return targets;
 			},
 			// --- King ---
-			[6]: (square: number, activeColor: number): Array<SimpleMoves> => {
+			[6]: (square: number): Array<SimpleMoves> => {
 				const targets: Array<SimpleMoves> = [];
 				const directions: Array<any> = [
 					{
@@ -284,7 +284,7 @@ export default class MoveGenerator {
 				for (var i = 0; i < dirLength; i++) {
 					for (var j = 0; j < directions[i].abs; j++) {
 						const targetSquare = square + directions[i].dir * (j + 1);
-						if (Piece.GetColor(this.board.squares[targetSquare]) === activeColor) {
+						if (Piece.GetColor(this.board.squares[targetSquare]) === this.board.activeColor) {
 							break;
 						}
 
@@ -303,9 +303,7 @@ export default class MoveGenerator {
 	getMoves(): Array<SimpleMoves> {
 		let moves: Array<SimpleMoves> = [];
 		this.board.pieces[this.board.whiteToMove ? 'white' : 'black'].forEach((piece, square) => {
-			moves = moves.concat(
-				this.moveMap[Piece.GetType(piece)](square, this.board.activeColor)
-			);
+			moves = moves.concat(this.moveMap[Piece.GetType(piece)](square));
 		});
 
 		return moves;
