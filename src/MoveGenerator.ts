@@ -382,68 +382,17 @@ export default class MoveGenerator {
 	// 			},
 	// 	};
 	// }
-
-	// getAttackedSquaresFrom(square: number): Array<number> {
-	// 	const piece = this.board.squares[square];
-	// 	let targets: Array<number> = [];
-
-	// 	if (Piece.GetType(piece) === 1) {
-	// 		const sign: string = this.board.activeColor === Piece.White ? '-' : '+';
-	// 		const calc: any = {
-	// 			['+']: (a: number, b: number) => a + b,
-	// 			['-']: (a: number, b: number) => a - b,
-	// 		}
-
-	// 		Board.getOffsetLeft(square) < 0
-	// 			&& targets.push(calc[sign](square, 9));
-
-	// 		Board.getOffsetRight(square) > 0
-	// 			&& targets.push(calc[sign](square, 7));
-	// 	}
-	// 	else {
-	// 		// this is not going to work
-	// 		//targets = this.moveMap[Piece.GetType(piece)](square).map((m: SimpleMoves) => m.to);
-	// 	}
-
-	// 	return targets;
-	// }
-	} //
-
-	// getSimpleMoves(): Array<SimpleMoves> {
-	// 	let simpleMoves: Array<SimpleMoves> = [];
-	// 	this.board.pieces[this.board.whiteToMove ? 'white' : 'black'].forEach((piece, square) => {
-	// 		simpleMoves = simpleMoves.concat(this.moveMap[Piece.GetType(piece)](square));
-	// 	});
-
-	// 	return simpleMoves;
-	// }
-
-	// isPseudoLegal(simpleMove: SimpleMoves): Boolean {
-	// 	const pieces = this.board.pieces[this.board.whiteToMove ? 'white' : 'black'];
-
-
-	// 	return true;
-	// }
-
-	// getMoves(): Array<Move> {
-	// 	const simpleMoves = this.getSimpleMoves();
-
-	// 	simpleMoves.forEach(simpleMove => {
-	// 		this.isPseudoLegal(simpleMove);
-	// 	});
-
-	// 	return [];
-	// }
+	}
 
 	getCoveredSquaresFrom(square: number): Array<number> {
-		return this.classMap[Piece.GetType(this.board.squares[square])]?.GetCoveringSquares(this.board, square);
+		return this.classMap[Piece.GetType(this.board.squares[square])].GetCoveringSquares(this.board, square);
 	}
 
 	getSimpleMoves(): Array<SimpleMoves> {
 		let simpleMoves: Array<SimpleMoves> = [];
 		this.board.pieces[this.board.whiteToMove ? 'white' : 'black'].forEach((piece, square) => {
 			simpleMoves = simpleMoves.concat(
-				this.classMap[Piece.GetType(piece)]?.GetSimpleMoves(this.board, square)
+				this.classMap[Piece.GetType(piece)]?.GetSimpleMoves(this.board, square) // TODO: Remove the '?'
 			);
 		});
 
