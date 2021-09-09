@@ -1,311 +1,452 @@
 import Board from './Board';
 import Piece from './Piece';
+import Move from './Move';
 import SimpleMoves from './interfaces/SimpleMoves';
+
+import Pawn from './pieces/Pawn';
+import Knight from './pieces/Knight';
+import Bishop from './pieces/Bishop';
 
 export default class MoveGenerator {
 	board: Board;
-	moveMap: any;
+	classMap: any;
 
 	constructor(board: Board) {
 		this.board = board;
-		this.moveMap = {
-			// --- Pawn ---
-			[1]: (square: number): Array<SimpleMoves> => {
-				const targets: Array<SimpleMoves> = [];
-				const sign: string = this.board.activeColor === Piece.White ? '-' : '+';
-				const calc: any = {
-					['+']: (a: number, b: number) => a + b,
-					['-']: (a: number, b: number) => a - b,
-				}
+		this.classMap = {
+			[Piece.Pawn]: Pawn,
+			[Piece.Knight]: Knight,
+			[Piece.Bishop]: Bishop,
+		}
+	// 	this.moveMap = {
+	// 		// --- Pawn ---
+	// 		[1]: (square: number): Array<SimpleMoves> => {
+	// 		},
+	// 		// --- Knight ---
+	// 		[2]: (square: number): Array<SimpleMoves> => {
+	// 		},
+	// 		// --- Bishop ---
+	// 		[3]: (square: number): Array<SimpleMoves> => {
+	// 		},
+	// 		// --- Rook ---
+	// 		[4]: (square: number): Array<SimpleMoves> => {
+	// 			const targets: Array<SimpleMoves> = [];
+	// 			const directions: Array<any> = [
+	// 				{
+	// 					dir: -8,
+	// 					abs: Math.abs(Board.getOffsetTop(square)),
+	// 				},
+	// 				{
+	// 					dir: -1,
+	// 					abs: Math.abs(Board.getOffsetLeft(square)),
+	// 				},
+	// 				{
+	// 					dir: 1,
+	// 					abs: Board.getOffsetRight(square),
+	// 				},
+	// 				{
+	// 					dir: 8,
+	// 					abs: Board.getOffsetBottom(square),
+	// 				},
+	// 			];
 
-				Board.getOffsetLeft(square) < 0
-					&& this.board.squares[calc[sign](square, 9)]
-					&& Piece.GetColor(this.board.squares[calc[sign](square, 9)]) !== this.board.activeColor
-					&& targets.push({ from: square, to: calc[sign](square, 9) });
+	// 			const dirLength = directions.length;
+	// 			for (var i = 0; i < dirLength; i++) {
+	// 				for (var j = 0; j < directions[i].abs; j++) {
+	// 					const targetSquare = square + directions[i].dir * (j + 1);
+	// 					if (Piece.GetColor(this.board.squares[targetSquare]) === this.board.activeColor) {
+	// 						break;
+	// 					}
 
-				Board.getOffsetRight(square) > 0
-					&& this.board.squares[calc[sign](square, 7)]
-					&& Piece.GetColor(this.board.squares[calc[sign](square, 7)]) !== this.board.activeColor
-					&& targets.push({ from: square, to: calc[sign](square, 7) });
+	// 					targets.push({ from: square, to: targetSquare });
 
-				if (this.board.enPassant >= 0) {
-					calc[sign](square, 7) === this.board.enPassant
-						&& targets.push({ from: square, to: calc[sign](square, 7) });
+	// 					if (this.board.squares[targetSquare]) {
+	// 						break;
+	// 					}
+	// 				}
+	// 			}
 
-					calc[sign](square, 9) === this.board.enPassant
-						&& targets.push({ from: square, to: calc[sign](square, 9) });
-				}
+	// 			return targets;
+	// 		},
+	// 		// --- Queen ---
+	// 		[5]: (square: number): Array<SimpleMoves> => {
+	// 			const targets: Array<SimpleMoves> = [];
+	// 			const directions: Array<any> = [
+	// 				{
+	// 					dir: -8,
+	// 					abs: Math.abs(Board.getOffsetTop(square)),
+	// 				},
+	// 				{
+	// 					dir: -1,
+	// 					abs: Math.abs(Board.getOffsetLeft(square)),
+	// 				},
+	// 				{
+	// 					dir: 1,
+	// 					abs: Board.getOffsetRight(square),
+	// 				},
+	// 				{
+	// 					dir: 8,
+	// 					abs: Board.getOffsetBottom(square),
+	// 				},
+	// 				{
+	// 					dir: -9,
+	// 					abs: Math.min(
+	// 						Math.abs(Board.getOffsetLeft(square)),
+	// 						Math.abs(Board.getOffsetTop(square))
+	// 					),
+	// 				},
+	// 				{
+	// 					dir: -7,
+	// 					abs: Math.min(
+	// 						Math.abs(Board.getOffsetTop(square)),
+	// 						Board.getOffsetRight(square)
+	// 					),
+	// 				},
+	// 				{
+	// 					dir: 7,
+	// 					abs: Math.min(
+	// 						Math.abs(Board.getOffsetLeft(square)),
+	// 						Board.getOffsetBottom(square)
+	// 					),
+	// 				},
+	// 				{
+	// 					dir: 9,
+	// 					abs: Math.min(
+	// 						Board.getOffsetBottom(square),
+	// 						Board.getOffsetRight(square)
+	// 					),
+	// 				},
+	// 			];
 
-				if (!this.board.squares[calc[sign](square, 8)]) {
-					targets.push({ from: square, to: calc[sign](square, 8) });
+	// 			const dirLength = directions.length;
+	// 			for (var i = 0; i < dirLength; i++) {
+	// 				for (var j = 0; j < directions[i].abs; j++) {
+	// 					const targetSquare = square + directions[i].dir * (j + 1);
+	// 					if (Piece.GetColor(this.board.squares[targetSquare]) === this.board.activeColor) {
+	// 						break;
+	// 					}
 
-					if ((square > 47 && square < 56) || (square > 7 && square < 16)) {
-						!this.board.squares[calc[sign](square, 16)]
-						&& targets.push({ from: square, to: calc[sign](square, 16) });
-					}
-				}
+	// 					targets.push({ from: square, to: targetSquare });
 
-				return targets;
-			},
-			// --- Knight ---
-			[2]: (square: number): Array<SimpleMoves> => {
-				let targets: Array<SimpleMoves> = [];
-				const calc: any = {
-					[0]: (a: number, b: number) => a + b,
-					[1]: (a: number, b: number) => a - b,
-				}
-				const squares: Array<number> = [17, 15, 10, 6];
+	// 					if (this.board.squares[targetSquare]) {
+	// 						break;
+	// 					}
+	// 				}
+	// 			}
 
-				for (var sign = 0; sign < 2; sign++) {
-					for (var i = 0; i < 4; i++) {
-						targets.push({ from: square, to: calc[sign](square, squares[i]) });
-					}
-				}
+	// 			return targets;
+	// 		},
+	// 		// --- King ---
+	// 		[6]: (square: number): Array<SimpleMoves> => {
+	// 			const targets: Array<SimpleMoves> = [];
+	// 			const directions: Array<any> = [
+	// 				{
+	// 					dir: -8,
+	// 					abs: Math.abs(Board.getOffsetTop(square)),
+	// 				},
+	// 				{
+	// 					dir: -1,
+	// 					abs: Math.abs(Board.getOffsetLeft(square)),
+	// 				},
+	// 				{
+	// 					dir: 1,
+	// 					abs: Board.getOffsetRight(square),
+	// 				},
+	// 				{
+	// 					dir: 8,
+	// 					abs: Board.getOffsetBottom(square),
+	// 				},
+	// 				{
+	// 					dir: -9,
+	// 					abs: Math.min(
+	// 						Math.abs(Board.getOffsetLeft(square)),
+	// 						Math.abs(Board.getOffsetTop(square))
+	// 					),
+	// 				},
+	// 				{
+	// 					dir: -7,
+	// 					abs: Math.min(
+	// 						Math.abs(Board.getOffsetTop(square)),
+	// 						Board.getOffsetRight(square)
+	// 					),
+	// 				},
+	// 				{
+	// 					dir: 7,
+	// 					abs: Math.min(
+	// 						Math.abs(Board.getOffsetLeft(square)),
+	// 						Board.getOffsetBottom(square)
+	// 					),
+	// 				},
+	// 				{
+	// 					dir: 9,
+	// 					abs: Math.min(
+	// 						Board.getOffsetBottom(square),
+	// 						Board.getOffsetRight(square)
+	// 					),
+	// 				},
+	// 			];
 
-				targets = targets.filter(({ to }) => {
-					return this.board.squares[to] !== undefined && (this.board.squares[to] === null
-						|| Piece.GetColor(this.board.squares[to]) !== this.board.activeColor)
-						&& Math.abs(Board.getOffsetLeft(square) - Board.getOffsetLeft(to)) < 3;
-				});
+	// 			const dirLength = directions.length;
+	// 			for (var i = 0; i < dirLength; i++) {
+	// 				for (var j = 0; j < directions[i].abs; j++) {
+	// 					const targetSquare = square + directions[i].dir * (j + 1);
+	// 					if (Piece.GetColor(this.board.squares[targetSquare]) === this.board.activeColor) {
+	// 						break;
+	// 					}
 
-				return targets;
-			},
-			// --- Bishop ---
-			[3]: (square: number): Array<SimpleMoves> => {
-				const targets: Array<SimpleMoves> = [];
-				const directions: Array<any> = [
-					{
-						dir: -9,
-						abs: Math.min(
-							Math.abs(Board.getOffsetLeft(square)),
-							Math.abs(Board.getOffsetTop(square))
-						),
-					},
-					{
-						dir: -7,
-						abs: Math.min(
-							Math.abs(Board.getOffsetTop(square)),
-							Board.getOffsetRight(square)
-						),
-					},
-					{
-						dir: 7,
-						abs: Math.min(
-							Math.abs(Board.getOffsetLeft(square)),
-							Board.getOffsetBottom(square)
-						),
-					},
-					{
-						dir: 9,
-						abs: Math.min(
-							Board.getOffsetBottom(square),
-							Board.getOffsetRight(square)
-						),
-					},
-				];
+	// 					targets.push({ from: square, to: targetSquare });
+	// 					break;
+	// 				}
+	// 			}
 
-				const dirLength = directions.length;
-				for (var i = 0; i < dirLength; i++) {
-					for (var j = 0; j < directions[i].abs; j++) {
-						const targetSquare = square + directions[i].dir * (j + 1);
-						if (Piece.GetColor(this.board.squares[targetSquare]) === this.board.activeColor) {
-							break;
-						}
+	// 			return targets;
+	// 		},
+	// 	};
 
-						targets.push({ from: square, to: targetSquare });
+	// 	this.attackMap = {
+	// 			// --- Pawn ---
+	// 			[Piece.Pawn]: (square: number): Array<SimpleMoves> => {
+	// 			},
+	// 			// --- Knight ---
+	// 			[2]: (square: number): Array<SimpleMoves> => {
+	// 			},
+	// 			// --- Bishop ---
+	// 			[3]: (square: number): Array<SimpleMoves> => {
+	// 			},
+	// 			// --- Rook ---
+	// 			[4]: (square: number): Array<SimpleMoves> => {
+	// 				const targets: Array<SimpleMoves> = [];
+	// 				const directions: Array<any> = [
+	// 					{
+	// 						dir: -8,
+	// 						abs: Math.abs(Board.getOffsetTop(square)),
+	// 					},
+	// 					{
+	// 						dir: -1,
+	// 						abs: Math.abs(Board.getOffsetLeft(square)),
+	// 					},
+	// 					{
+	// 						dir: 1,
+	// 						abs: Board.getOffsetRight(square),
+	// 					},
+	// 					{
+	// 						dir: 8,
+	// 						abs: Board.getOffsetBottom(square),
+	// 					},
+	// 				];
 
-						if (this.board.squares[targetSquare]) {
-							break;
-						}
-					}
-				}
+	// 				const dirLength = directions.length;
+	// 				for (var i = 0; i < dirLength; i++) {
+	// 					for (var j = 0; j < directions[i].abs; j++) {
+	// 						const targetSquare = square + directions[i].dir * (j + 1);
+	// 						targets.push({ from: square, to: targetSquare });
 
-				return targets;
-			},
-			// --- Rook ---
-			[4]: (square: number): Array<SimpleMoves> => {
-				const targets: Array<SimpleMoves> = [];
-				const directions: Array<any> = [
-					{
-						dir: -8,
-						abs: Math.abs(Board.getOffsetTop(square)),
-					},
-					{
-						dir: -1,
-						abs: Math.abs(Board.getOffsetLeft(square)),
-					},
-					{
-						dir: 1,
-						abs: Board.getOffsetRight(square),
-					},
-					{
-						dir: 8,
-						abs: Board.getOffsetBottom(square),
-					},
-				];
+	// 						if (
+	// 							this.board.squares[targetSquare]
+	// 							|| Piece.GetColor(this.board.squares[targetSquare]) === this.board.activeColor)
+	// 						{
+	// 							break;
+	// 						}
+	// 					}
+	// 				}
 
-				const dirLength = directions.length;
-				for (var i = 0; i < dirLength; i++) {
-					for (var j = 0; j < directions[i].abs; j++) {
-						const targetSquare = square + directions[i].dir * (j + 1);
-						if (Piece.GetColor(this.board.squares[targetSquare]) === this.board.activeColor) {
-							break;
-						}
+	// 				return targets;
+	// 			},
+	// 			// --- Queen ---
+	// 			[5]: (square: number): Array<SimpleMoves> => {
+	// 				const targets: Array<SimpleMoves> = [];
+	// 				const directions: Array<any> = [
+	// 					{
+	// 						dir: -8,
+	// 						abs: Math.abs(Board.getOffsetTop(square)),
+	// 					},
+	// 					{
+	// 						dir: -1,
+	// 						abs: Math.abs(Board.getOffsetLeft(square)),
+	// 					},
+	// 					{
+	// 						dir: 1,
+	// 						abs: Board.getOffsetRight(square),
+	// 					},
+	// 					{
+	// 						dir: 8,
+	// 						abs: Board.getOffsetBottom(square),
+	// 					},
+	// 					{
+	// 						dir: -9,
+	// 						abs: Math.min(
+	// 							Math.abs(Board.getOffsetLeft(square)),
+	// 							Math.abs(Board.getOffsetTop(square))
+	// 						),
+	// 					},
+	// 					{
+	// 						dir: -7,
+	// 						abs: Math.min(
+	// 							Math.abs(Board.getOffsetTop(square)),
+	// 							Board.getOffsetRight(square)
+	// 						),
+	// 					},
+	// 					{
+	// 						dir: 7,
+	// 						abs: Math.min(
+	// 							Math.abs(Board.getOffsetLeft(square)),
+	// 							Board.getOffsetBottom(square)
+	// 						),
+	// 					},
+	// 					{
+	// 						dir: 9,
+	// 						abs: Math.min(
+	// 							Board.getOffsetBottom(square),
+	// 							Board.getOffsetRight(square)
+	// 						),
+	// 					},
+	// 				];
 
-						targets.push({ from: square, to: targetSquare });
+	// 				const dirLength = directions.length;
+	// 				for (var i = 0; i < dirLength; i++) {
+	// 					for (var j = 0; j < directions[i].abs; j++) {
+	// 						const targetSquare = square + directions[i].dir * (j + 1);
+	// 						targets.push({ from: square, to: targetSquare });
 
-						if (this.board.squares[targetSquare]) {
-							break;
-						}
-					}
-				}
+	// 						if (
+	// 							this.board.squares[targetSquare]
+	// 							|| Piece.GetColor(this.board.squares[targetSquare]) === this.board.activeColor)
+	// 						{
+	// 							break;
+	// 						}
+	// 					}
+	// 				}
 
-				return targets;
-			},
-			// --- Queen ---
-			[5]: (square: number): Array<SimpleMoves> => {
-				const targets: Array<SimpleMoves> = [];
-				const directions: Array<any> = [
-					{
-						dir: -8,
-						abs: Math.abs(Board.getOffsetTop(square)),
-					},
-					{
-						dir: -1,
-						abs: Math.abs(Board.getOffsetLeft(square)),
-					},
-					{
-						dir: 1,
-						abs: Board.getOffsetRight(square),
-					},
-					{
-						dir: 8,
-						abs: Board.getOffsetBottom(square),
-					},
-					{
-						dir: -9,
-						abs: Math.min(
-							Math.abs(Board.getOffsetLeft(square)),
-							Math.abs(Board.getOffsetTop(square))
-						),
-					},
-					{
-						dir: -7,
-						abs: Math.min(
-							Math.abs(Board.getOffsetTop(square)),
-							Board.getOffsetRight(square)
-						),
-					},
-					{
-						dir: 7,
-						abs: Math.min(
-							Math.abs(Board.getOffsetLeft(square)),
-							Board.getOffsetBottom(square)
-						),
-					},
-					{
-						dir: 9,
-						abs: Math.min(
-							Board.getOffsetBottom(square),
-							Board.getOffsetRight(square)
-						),
-					},
-				];
+	// 				return targets;
+	// 			},
+	// 			// --- King ---
+	// 			[6]: (square: number): Array<SimpleMoves> => {
+	// 				const targets: Array<SimpleMoves> = [];
+	// 				const directions: Array<any> = [
+	// 					{
+	// 						dir: -8,
+	// 						abs: Math.abs(Board.getOffsetTop(square)),
+	// 					},
+	// 					{
+	// 						dir: -1,
+	// 						abs: Math.abs(Board.getOffsetLeft(square)),
+	// 					},
+	// 					{
+	// 						dir: 1,
+	// 						abs: Board.getOffsetRight(square),
+	// 					},
+	// 					{
+	// 						dir: 8,
+	// 						abs: Board.getOffsetBottom(square),
+	// 					},
+	// 					{
+	// 						dir: -9,
+	// 						abs: Math.min(
+	// 							Math.abs(Board.getOffsetLeft(square)),
+	// 							Math.abs(Board.getOffsetTop(square))
+	// 						),
+	// 					},
+	// 					{
+	// 						dir: -7,
+	// 						abs: Math.min(
+	// 							Math.abs(Board.getOffsetTop(square)),
+	// 							Board.getOffsetRight(square)
+	// 						),
+	// 					},
+	// 					{
+	// 						dir: 7,
+	// 						abs: Math.min(
+	// 							Math.abs(Board.getOffsetLeft(square)),
+	// 							Board.getOffsetBottom(square)
+	// 						),
+	// 					},
+	// 					{
+	// 						dir: 9,
+	// 						abs: Math.min(
+	// 							Board.getOffsetBottom(square),
+	// 							Board.getOffsetRight(square)
+	// 						),
+	// 					},
+	// 				];
 
-				const dirLength = directions.length;
-				for (var i = 0; i < dirLength; i++) {
-					for (var j = 0; j < directions[i].abs; j++) {
-						const targetSquare = square + directions[i].dir * (j + 1);
-						if (Piece.GetColor(this.board.squares[targetSquare]) === this.board.activeColor) {
-							break;
-						}
+	// 				const dirLength = directions.length;
+	// 				for (var i = 0; i < dirLength; i++) {
+	// 					for (var j = 0; j < directions[i].abs; j++) {
+	// 						const targetSquare = square + directions[i].dir * (j + 1);
+	// 						targets.push({ from: square, to: targetSquare });
+	// 						break;
+	// 					}
+	// 				}
 
-						targets.push({ from: square, to: targetSquare });
+	// 				return targets;
+	// 			},
+	// 	};
+	// }
 
-						if (this.board.squares[targetSquare]) {
-							break;
-						}
-					}
-				}
+	// getAttackedSquaresFrom(square: number): Array<number> {
+	// 	const piece = this.board.squares[square];
+	// 	let targets: Array<number> = [];
 
-				return targets;
-			},
-			// --- King ---
-			[6]: (square: number): Array<SimpleMoves> => {
-				const targets: Array<SimpleMoves> = [];
-				const directions: Array<any> = [
-					{
-						dir: -8,
-						abs: Math.abs(Board.getOffsetTop(square)),
-					},
-					{
-						dir: -1,
-						abs: Math.abs(Board.getOffsetLeft(square)),
-					},
-					{
-						dir: 1,
-						abs: Board.getOffsetRight(square),
-					},
-					{
-						dir: 8,
-						abs: Board.getOffsetBottom(square),
-					},
-					{
-						dir: -9,
-						abs: Math.min(
-							Math.abs(Board.getOffsetLeft(square)),
-							Math.abs(Board.getOffsetTop(square))
-						),
-					},
-					{
-						dir: -7,
-						abs: Math.min(
-							Math.abs(Board.getOffsetTop(square)),
-							Board.getOffsetRight(square)
-						),
-					},
-					{
-						dir: 7,
-						abs: Math.min(
-							Math.abs(Board.getOffsetLeft(square)),
-							Board.getOffsetBottom(square)
-						),
-					},
-					{
-						dir: 9,
-						abs: Math.min(
-							Board.getOffsetBottom(square),
-							Board.getOffsetRight(square)
-						),
-					},
-				];
+	// 	if (Piece.GetType(piece) === 1) {
+	// 		const sign: string = this.board.activeColor === Piece.White ? '-' : '+';
+	// 		const calc: any = {
+	// 			['+']: (a: number, b: number) => a + b,
+	// 			['-']: (a: number, b: number) => a - b,
+	// 		}
 
-				const dirLength = directions.length;
-				for (var i = 0; i < dirLength; i++) {
-					for (var j = 0; j < directions[i].abs; j++) {
-						const targetSquare = square + directions[i].dir * (j + 1);
-						if (Piece.GetColor(this.board.squares[targetSquare]) === this.board.activeColor) {
-							break;
-						}
+	// 		Board.getOffsetLeft(square) < 0
+	// 			&& targets.push(calc[sign](square, 9));
 
-						targets.push({ from: square, to: targetSquare });
-						break;
-					}
-				}
+	// 		Board.getOffsetRight(square) > 0
+	// 			&& targets.push(calc[sign](square, 7));
+	// 	}
+	// 	else {
+	// 		// this is not going to work
+	// 		//targets = this.moveMap[Piece.GetType(piece)](square).map((m: SimpleMoves) => m.to);
+	// 	}
 
-				// TODO: Castle
+	// 	return targets;
+	// }
+	} //
 
-				return targets;
-			},
-		};
+	// getSimpleMoves(): Array<SimpleMoves> {
+	// 	let simpleMoves: Array<SimpleMoves> = [];
+	// 	this.board.pieces[this.board.whiteToMove ? 'white' : 'black'].forEach((piece, square) => {
+	// 		simpleMoves = simpleMoves.concat(this.moveMap[Piece.GetType(piece)](square));
+	// 	});
+
+	// 	return simpleMoves;
+	// }
+
+	// isPseudoLegal(simpleMove: SimpleMoves): Boolean {
+	// 	const pieces = this.board.pieces[this.board.whiteToMove ? 'white' : 'black'];
+
+
+	// 	return true;
+	// }
+
+	// getMoves(): Array<Move> {
+	// 	const simpleMoves = this.getSimpleMoves();
+
+	// 	simpleMoves.forEach(simpleMove => {
+	// 		this.isPseudoLegal(simpleMove);
+	// 	});
+
+	// 	return [];
+	// }
+
+	getCoveredSquaresFrom(square: number): Array<number> {
+		return this.classMap[Piece.GetType(this.board.squares[square])]?.GetCoveringSquares(this.board, square);
 	}
 
-	getMoves(): Array<SimpleMoves> {
-		let moves: Array<SimpleMoves> = [];
+	getSimpleMoves(): Array<SimpleMoves> {
+		let simpleMoves: Array<SimpleMoves> = [];
 		this.board.pieces[this.board.whiteToMove ? 'white' : 'black'].forEach((piece, square) => {
-			moves = moves.concat(this.moveMap[Piece.GetType(piece)](square));
+			simpleMoves = simpleMoves.concat(
+				this.classMap[Piece.GetType(piece)]?.GetSimpleMoves(this.board, square)
+			);
 		});
 
-		return moves;
+		return simpleMoves;
 	}
 }

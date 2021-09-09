@@ -1,11 +1,11 @@
 import { expect, test } from '@jest/globals';
 import Board from '../src/Board';
 
-test('Pawn #1 [move]', () => {
+test('Pawn #1 [simple - move]', () => {
 	const board = new Board();
 
 	board.load('8/8/8/8/8/8/4P3/8 w - - 0 1');
-	let moves = board.getMoves();
+	let moves = board.getSimpleMoves();
 	let expectedMoves = [
 		{ from: Board.coord.e2, to: Board.coord.e3 },
 		{ from: Board.coord.e2, to: Board.coord.e4 },
@@ -19,7 +19,7 @@ test('Pawn #1 [move]', () => {
 	});
 
 	board.load('8/8/8/8/4p3/8/4P3/8 w - - 0 1');
-	moves = board.getMoves();
+	moves = board.getSimpleMoves();
 	expectedMoves = [
 		{ from: Board.coord.e2, to: Board.coord.e3 },
 	];
@@ -32,7 +32,7 @@ test('Pawn #1 [move]', () => {
 	});
 
 	board.load('8/8/8/8/8/4P3/8/8 w - - 0 1');
-	moves = board.getMoves();
+	moves = board.getSimpleMoves();
 	expectedMoves = [
 		{ from: Board.coord.e3, to: Board.coord.e4 },
 	];
@@ -45,14 +45,14 @@ test('Pawn #1 [move]', () => {
 	});
 
 	board.load('8/8/8/8/8/4p3/4P3/8 w - - 0 1');
-	expect(board.getMoves().length).toEqual(0);
+	expect(board.getSimpleMoves().length).toEqual(0);
 });
 
-test('Pawn #2 [capture]', () => {
+test('Pawn #2 [simple - capture]', () => {
 	const board = new Board();
 
 	board.load('8/8/8/8/3p1p2/4P3/8/8 w - - 0 1');
-	const moves = board.getMoves();
+	const moves = board.getSimpleMoves();
 	const expectedMoves = [
 		{ from: Board.coord.e3, to: Board.coord.d4 },
 		{ from: Board.coord.e3, to: Board.coord.e4 },
@@ -67,11 +67,11 @@ test('Pawn #2 [capture]', () => {
 	});
 });
 
-test('Pawn #3 [en passant]', () => {
+test('Pawn #3 [simple - en passant]', () => {
 	const board = new Board();
 
 	board.load('8/8/8/4Pp2/8/8/8/8 w - f6 0 1');
-	const moves = board.getMoves();
+	const moves = board.getSimpleMoves();
 	const expectedMoves = [
 		{ from: Board.coord.e5, to: Board.coord.e6 },
 		{ from: Board.coord.e5, to: Board.coord.f6 },
@@ -85,11 +85,11 @@ test('Pawn #3 [en passant]', () => {
 	});
 });
 
-test('Pawn #4 [capture border left]', () => {
+test('Pawn #4 [simple - capture border left]', () => {
 	const board = new Board();
 
 	board.load('8/8/8/8/7p/pp6/P7/8 w - - 0 1');
-	const moves = board.getMoves();
+	const moves = board.getSimpleMoves();
 	const expectedMoves = [
 		{ from: Board.coord.a2, to: Board.coord.b3 },
 	];
@@ -102,11 +102,11 @@ test('Pawn #4 [capture border left]', () => {
 	});
 });
 
-test('Pawn #5 (capture border right)', () => {
+test('Pawn #5 (simple - capture border right)', () => {
 	const board = new Board();
 
 	board.load('8/8/8/8/8/6pp/p6P/8 w - - 0 1');
-	const moves = board.getMoves();
+	const moves = board.getSimpleMoves();
 	const expectedMoves = [
 		{ from: Board.coord.h2, to: Board.coord.g3 },
 	];

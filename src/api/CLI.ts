@@ -69,7 +69,7 @@ export default class CLI {
 	printMoves(): void {
 		const board: Board = this.api.maria.games.get(this.id).board;
 
-		board.getMoves().forEach((move: number) => {
+		board.getSimpleMoves().forEach((move: number) => {
 			console.log(Board.SquareToAlgebraic(move));
 		});
 	}

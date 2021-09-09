@@ -1,11 +1,11 @@
 import { expect, test } from '@jest/globals';
 import Board from '../src/Board';
 
-test('Kight #1 [move]', () => {
+test('Kight #1 [simple - move]', () => {
 	const board = new Board();
 
 	board.load('8/8/8/8/8/4N3/8/8 w - - 0 1');
-	let moves = board.getMoves();
+	let moves = board.getSimpleMoves();
 	let expectedMoves = [
 		{ from: Board.coord.e3, to: Board.coord.d5 },
 		{ from: Board.coord.e3, to: Board.coord.f5 },
@@ -25,7 +25,7 @@ test('Kight #1 [move]', () => {
 	});
 
 	board.load('8/8/8/8/8/8/6N1/8 w - - 0 1');
-	moves = board.getMoves();
+	moves = board.getSimpleMoves();
 	expectedMoves = [
 		{ from: Board.coord.g2, to: Board.coord.e3 },
 		{ from: Board.coord.g2, to: Board.coord.f4 },
@@ -41,7 +41,7 @@ test('Kight #1 [move]', () => {
 	});
 
 	board.load('N7/8/8/8/8/8/8/8 w - - 0 1');
-	moves = board.getMoves();
+	moves = board.getSimpleMoves();
 	expectedMoves = [
 		{ from: Board.coord.a8, to: Board.coord.b6 },
 		{ from: Board.coord.a8, to: Board.coord.c7 },
@@ -55,11 +55,11 @@ test('Kight #1 [move]', () => {
 	});
 });
 
-test('Kight #2 [capture]', () => {
+test('Kight #2 [simple - capture]', () => {
 	const board = new Board();
 
 	board.load('N7/8/1p6/8/8/8/8/8 w - - 0 1');
-	const moves = board.getMoves();
+	const moves = board.getSimpleMoves();
 	const expectedMoves = [
 		{ from: Board.coord.a8, to: Board.coord.b6 },
 		{ from: Board.coord.a8, to: Board.coord.c7 },
@@ -73,11 +73,11 @@ test('Kight #2 [capture]', () => {
 	});
 });
 
-test('Kight #3 [blocked]', () => {
+test('Kight #3 [simple - blocked]', () => {
 	const board = new Board();
 
 	board.load('N7/1p6/1P6/8/8/8/8/8 w - - 0 1');
-	const moves = board.getMoves();
+	const moves = board.getSimpleMoves();
 	const expectedMoves = [
 		{ from: Board.coord.a8, to: Board.coord.c7 },
 	];

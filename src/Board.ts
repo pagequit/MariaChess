@@ -21,8 +21,10 @@ export default class Board implements Moves {
 		black: Map<number, number>,
 	}
 
-	private moveGen: MoveGenerator;
-	readonly getMoves: Function;
+	whiteKingPos: number;
+	blackKingPos: number;
+
+	moveGen: MoveGenerator;
 
 	static readonly startposFEN: string = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
 	static readonly fileNames: string = 'abcdefgh';
@@ -57,7 +59,6 @@ export default class Board implements Moves {
 		}
 
 		this.moveGen = new MoveGenerator(this);
-		this.getMoves = this.moveGen.getMoves.bind(this.moveGen);
 	}
 
 	static SquareToAlgebraic(square: number): string {
@@ -202,11 +203,18 @@ export default class Board implements Moves {
 		this.pieces.white.clear();
 		this.pieces.black.clear();
 		for (let i = 0; i < this.squares.length; i++) {
-			Piece.GetColor(this.squares[i]) === Piece.White
-				&& this.pieces.white.set(i, this.squares[i]);
-
-			Piece.GetColor(this.squares[i]) === Piece.Black
-				&& this.pieces.black.set(i, this.squares[i]);
+			if (Piece.GetColor(this.squares[i]) === Piece.White) {
+				this.pieces.white.set(i, this.squares[i]);
+				if (Piece.GetType(this.squares[i]) === 6) {
+					this.whiteKingPos = i;
+				}
+			}
+			else if (Piece.GetColor(this.squares[i]) === Piece.Black) {
+				this.pieces.black.set(i, this.squares[i]);
+				if (Piece.GetType(this.squares[i]) === 6) {
+					this.blackKingPos = i;
+				}
+			}
 		}
 	}
 
