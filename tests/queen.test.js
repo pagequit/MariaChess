@@ -5,7 +5,7 @@ test('Queen #1 [simple - move]', () => {
 	const board = new Board();
 
 	board.load('8/8/8/8/8/8/8/Q7 w - - 0 1');
-	let moves = board.getSimpleMoves();
+	let moves = board.moveGen.getSimpleMoves();
 	let expectedMoves = [
 		{ from: Board.coord.a1, to: Board.coord.h8 },
 		{ from: Board.coord.a1, to: Board.coord.g7 },
@@ -38,7 +38,7 @@ test('Queen #1 [simple - move]', () => {
 	});
 
 	board.load('7Q/8/8/8/8/8/8/8 w - - 0 1');
-	moves = board.getSimpleMoves();
+	moves = board.moveGen.getSimpleMoves();
 	expectedMoves = [
 		{ from: Board.coord.h8, to: Board.coord.a8 },
 		{ from: Board.coord.h8, to: Board.coord.b8 },
@@ -71,7 +71,7 @@ test('Queen #1 [simple - move]', () => {
 	});
 
 	board.load('8/8/8/3Q4/8/8/8/8 w - - 0 1');
-	moves = board.getSimpleMoves();
+	moves = board.moveGen.getSimpleMoves();
 	expectedMoves = [
 		{ from: Board.coord.d5, to: Board.coord.a8 },
 		{ from: Board.coord.d5, to: Board.coord.b7 },
@@ -114,7 +114,7 @@ test('Queen #2 [simple - capture]', () => {
 	const board = new Board();
 
 	board.load('8/3p1p2/8/3Q4/8/8/8/8 w - - 0 1');
-	const moves = board.getSimpleMoves();
+	const moves = board.moveGen.getSimpleMoves();
 	const expectedMoves = [
 		{ from: Board.coord.d5, to: Board.coord.a8 },
 		{ from: Board.coord.d5, to: Board.coord.b7 },
@@ -155,7 +155,7 @@ test('Queen #3 [simple - blocked]', () => {
 	const board = new Board();
 
 	board.load('8/3p1p2/3P4/3Q4/3P4/8/8/8 w - - 0 1');
-	const moves = board.getSimpleMoves();
+	const moves = board.moveGen.getSimpleMoves();
 	const expectedMoves = [
 		{ from: Board.coord.d5, to: Board.coord.a8 },
 		{ from: Board.coord.d5, to: Board.coord.b7 },

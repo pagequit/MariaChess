@@ -5,7 +5,7 @@ test('Bishop #1 [simple - move]', () => {
 	const board = new Board();
 
 	board.load('8/8/8/8/8/8/6B1/8 w - - 0 1');
-	let moves = board.getSimpleMoves();
+	let moves = board.moveGen.getSimpleMoves();
 	let expectedMoves = [
 		{ from: Board.coord.g2, to: Board.coord.h1 },
 		{ from: Board.coord.g2, to: Board.coord.h3 },
@@ -26,7 +26,7 @@ test('Bishop #1 [simple - move]', () => {
 	});
 
 	board.load('8/8/8/3B4/8/8/8/8 w - - 0 1');
-	moves = board.getSimpleMoves();
+	moves = board.moveGen.getSimpleMoves();
 	expectedMoves = [
 		{ from: Board.coord.d5, to: Board.coord.a8 },
 		{ from: Board.coord.d5, to: Board.coord.b7 },
@@ -55,7 +55,7 @@ test('Bishop #2 [simple - capture]', () => {
 	const board = new Board();
 
 	board.load('8/8/8/8/4b3/8/6B1/8 w - - 0 1');
-	const moves = board.getSimpleMoves();
+	const moves = board.moveGen.getSimpleMoves();
 	const expectedMoves = [
 		{ from: Board.coord.g2, to: Board.coord.h1 },
 		{ from: Board.coord.g2, to: Board.coord.h3 },
@@ -76,7 +76,7 @@ test('Bishop #3 [simple - blocked]', () => {
 	const board = new Board();
 
 	board.load('8/8/8/7B/8/4p3/4P3/8 w - - 0 1');
-	const moves = board.getSimpleMoves();
+	const moves = board.moveGen.getSimpleMoves();
 	const expectedMoves = [
 		{ from: Board.coord.h5, to: Board.coord.g4 },
 		{ from: Board.coord.h5, to: Board.coord.f3 },

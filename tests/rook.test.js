@@ -5,7 +5,7 @@ test('Rook #1 [simple - move]', () => {
 	const board = new Board();
 
 	board.load('8/8/8/8/8/8/8/R7 w - - 0 1');
-	const moves = board.getSimpleMoves();
+	const moves = board.moveGen.getSimpleMoves();
 	const expectedMoves = [
 		{ from: Board.coord.a1, to: Board.coord.a2 },
 		{ from: Board.coord.a1, to: Board.coord.a3 },
@@ -35,7 +35,7 @@ test('Rook #2 [simple - capture]', () => {
 	const board = new Board();
 
 	board.load('8/p7/8/8/8/8/8/R7 w - - 0 1');
-	const moves = board.getSimpleMoves();
+	const moves = board.moveGen.getSimpleMoves();
 	const expectedMoves = [
 		{ from: Board.coord.a1, to: Board.coord.a2 },
 		{ from: Board.coord.a1, to: Board.coord.a3 },
@@ -64,7 +64,7 @@ test('Rook #3 [simple - blocked]', () => {
 	const board = new Board();
 
 	board.load('8/8/8/8/8/p7/P7/R7 w - - 0 1');
-	const moves = board.getSimpleMoves();
+	const moves = board.moveGen.getSimpleMoves();
 	const expectedMoves = [
 		{ from: Board.coord.a1, to: Board.coord.b1 },
 		{ from: Board.coord.a1, to: Board.coord.c1 },
