@@ -6,6 +6,7 @@ import SimpleMoves from './interfaces/SimpleMoves';
 import Pawn from './pieces/Pawn';
 import Knight from './pieces/Knight';
 import Bishop from './pieces/Bishop';
+import Rook from './pieces/Rook';
 
 export default class MoveGenerator {
 	board: Board;
@@ -17,6 +18,7 @@ export default class MoveGenerator {
 			[Piece.Pawn]: Pawn,
 			[Piece.Knight]: Knight,
 			[Piece.Bishop]: Bishop,
+			[Piece.Rook]: Rook,
 		}
 	// 	this.moveMap = {
 	// 		// --- Pawn ---
@@ -30,43 +32,6 @@ export default class MoveGenerator {
 	// 		},
 	// 		// --- Rook ---
 	// 		[4]: (square: number): Array<SimpleMoves> => {
-	// 			const targets: Array<SimpleMoves> = [];
-	// 			const directions: Array<any> = [
-	// 				{
-	// 					dir: -8,
-	// 					abs: Math.abs(Board.getOffsetTop(square)),
-	// 				},
-	// 				{
-	// 					dir: -1,
-	// 					abs: Math.abs(Board.getOffsetLeft(square)),
-	// 				},
-	// 				{
-	// 					dir: 1,
-	// 					abs: Board.getOffsetRight(square),
-	// 				},
-	// 				{
-	// 					dir: 8,
-	// 					abs: Board.getOffsetBottom(square),
-	// 				},
-	// 			];
-
-	// 			const dirLength = directions.length;
-	// 			for (var i = 0; i < dirLength; i++) {
-	// 				for (var j = 0; j < directions[i].abs; j++) {
-	// 					const targetSquare = square + directions[i].dir * (j + 1);
-	// 					if (Piece.GetColor(this.board.squares[targetSquare]) === this.board.activeColor) {
-	// 						break;
-	// 					}
-
-	// 					targets.push({ from: square, to: targetSquare });
-
-	// 					if (this.board.squares[targetSquare]) {
-	// 						break;
-	// 					}
-	// 				}
-	// 			}
-
-	// 			return targets;
 	// 		},
 	// 		// --- Queen ---
 	// 		[5]: (square: number): Array<SimpleMoves> => {
