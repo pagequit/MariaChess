@@ -54,7 +54,9 @@ export default class Bishop {
 				const targetSquare = square + directions[i].dir * (j + 1);
 				targets.push(targetSquare);
 
-				if (board.squares[targetSquare] !== null) { // TODO: 2. Think about this
+				if (board.squares[targetSquare]
+					|| Piece.GetColor(board.squares[targetSquare]) === board.activeColor
+				) {
 					break;
 				}
 			}

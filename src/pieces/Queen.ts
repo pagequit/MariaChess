@@ -2,7 +2,7 @@ import Board from "../Board";
 import Piece from "../Piece";
 import SimpleMoves from "../interfaces/SimpleMoves";
 
-export default class Rook {
+export default class Queen {
 	static GetDirections(square: number): Array<any> {
 		return [
 			{
@@ -21,11 +21,39 @@ export default class Rook {
 				dir: 8,
 				abs: Board.getOffsetBottom(square),
 			},
+			{
+				dir: -9,
+				abs: Math.min(
+					Math.abs(Board.getOffsetLeft(square)),
+					Math.abs(Board.getOffsetTop(square))
+				),
+			},
+			{
+				dir: -7,
+				abs: Math.min(
+					Math.abs(Board.getOffsetTop(square)),
+					Board.getOffsetRight(square)
+				),
+			},
+			{
+				dir: 7,
+				abs: Math.min(
+					Math.abs(Board.getOffsetLeft(square)),
+					Board.getOffsetBottom(square)
+				),
+			},
+			{
+				dir: 9,
+				abs: Math.min(
+					Board.getOffsetBottom(square),
+					Board.getOffsetRight(square)
+				),
+			},
 		];
 	}
 
 	static GetSimpleMoves(board: Board, square: number): Array<SimpleMoves> {
-		return Rook.GetCoveringSquares(board, square).filter(s => {
+		return Queen.GetCoveringSquares(board, square).filter(s => {
 			return Piece.GetColor(board.squares[s]) !== board.activeColor
 		}).map(s => {
 			return { from: square, to: s };
@@ -34,7 +62,7 @@ export default class Rook {
 
 	static GetCoveringSquares(board: Board, square: number): Array<number> {
 		const targets: Array<number> = [];
-		const directions = Rook.GetDirections(square);
+		const directions = Queen.GetDirections(square);
 
 		const dirLength = directions.length;
 		for (var i = 0; i < dirLength; i++) {
