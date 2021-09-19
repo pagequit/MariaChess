@@ -70,7 +70,7 @@ export default class CLI {
 		const board: Board = this.api.maria.games.get(this.id).board;
 
 		board.moveGen.getSimpleMoves().forEach((move) => {
-			console.log(Board.SquareToAlgebraic(move.to));
+			console.log(Board.SquareToAlgebraic(move.from) + Board.SquareToAlgebraic(move.to));
 		});
 	}
 }
