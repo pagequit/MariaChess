@@ -11,7 +11,7 @@ import King from './pieces/King';
 
 export default class MoveGenerator {
 	board: Board;
-	classMap: any;
+	classMap: any; // TODO: specify
 
 	constructor(board: Board) {
 		this.board = board;
@@ -25,12 +25,12 @@ export default class MoveGenerator {
 		};
 	}
 
-	getCoveredSquaresFrom(square: number): Array<number> {
+	getCoveredSquaresFrom(square: number): number[] {
 		return this.classMap[Piece.GetType(this.board.squares[square])].GetCoveringSquares(this.board, square);
 	}
 
-	getSimpleMoves(): Array<SimpleMoves> {
-		let simpleMoves: Array<SimpleMoves> = [];
+	getSimpleMoves(): SimpleMoves[] {
+		let simpleMoves: SimpleMoves[] = [];
 		this.board.pieces[this.board.whiteToMove ? 'white' : 'black'].forEach((piece, square) => {
 			simpleMoves = simpleMoves.concat(
 				this.classMap[Piece.GetType(piece)].GetSimpleMoves(this.board, square)

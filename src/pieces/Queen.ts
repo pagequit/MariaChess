@@ -3,7 +3,7 @@ import Piece from "../Piece";
 import SimpleMoves from "../interfaces/SimpleMoves";
 
 export default class Queen {
-	static GetDirections(square: number): Array<any> {
+	static GetDirections(square: number): Array<{ dir: number, abs: number }> {
 		return [
 			{
 				dir: -8,
@@ -52,7 +52,7 @@ export default class Queen {
 		];
 	}
 
-	static GetSimpleMoves(board: Board, square: number): Array<SimpleMoves> {
+	static GetSimpleMoves(board: Board, square: number): SimpleMoves[] {
 		return Queen.GetCoveringSquares(board, square).filter(s => {
 			return Piece.GetColor(board.squares[s]) !== board.activeColor
 		}).map(s => {
@@ -60,8 +60,8 @@ export default class Queen {
 		});
 	}
 
-	static GetCoveringSquares(board: Board, square: number): Array<number> {
-		const targets: Array<number> = [];
+	static GetCoveringSquares(board: Board, square: number): number[] {
+		const targets: number[] = [];
 		const directions = Queen.GetDirections(square);
 
 		const dirLength = directions.length;

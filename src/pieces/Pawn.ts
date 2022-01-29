@@ -12,9 +12,9 @@ export default class Pawn {
 		return board.activeColor === Piece.White ? '-' : '+';
 	}
 
-	static GetSimpleMoves(board: Board, square: number): Array<SimpleMoves> {
-		const targets: Array<SimpleMoves> = [];
-		const sign: string = Pawn.GetSign(board);
+	static GetSimpleMoves(board: Board, square: number): SimpleMoves[] {
+		const targets: SimpleMoves[] = [];
+		const sign = Pawn.GetSign(board);
 
 		Board.getOffsetLeft(square) < 0
 			&& board.squares[Pawn.Calc[sign](square, 9)]
@@ -46,9 +46,9 @@ export default class Pawn {
 		return targets;
 	}
 
-	static GetCoveringSquares(board: Board, square: number): Array<number> {
-		const targets: Array<number> = [];
-		const sign: string = Pawn.GetSign(board);
+	static GetCoveringSquares(board: Board, square: number): number[] {
+		const targets: number[] = [];
+		const sign = Pawn.GetSign(board);
 
 		Board.getOffsetLeft(square) < 0
 			&& targets.push(Pawn.Calc[sign](square, 9));

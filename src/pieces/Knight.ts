@@ -3,8 +3,8 @@ import Piece from "../Piece";
 import SimpleMoves from "../interfaces/SimpleMoves";
 
 export default class Knight {
-	static Squares: Array<number> = [17, 15, 10, 6];
-	static Calc: any = {
+	static Squares = [17, 15, 10, 6];
+	static Calc: any = { // TODO: specify
 		0: (a: number, b: number) => a + b,
 		1: (a: number, b: number) => a - b,
 	}
@@ -13,10 +13,10 @@ export default class Knight {
 		return board.activeColor === Piece.White ? '-' : '+';
 	}
 
-	static GetSimpleMoves(board: Board, square: number): Array<SimpleMoves> {
-		let targets: Array<SimpleMoves> = [];
+	static GetSimpleMoves(board: Board, square: number): SimpleMoves[] {
+		let targets: SimpleMoves[] = [];
 
-		const coveredSquares: Array<number> = Knight.GetCoveringSquares(board, square);
+		const coveredSquares = Knight.GetCoveringSquares(board, square);
 
 		const coveredSquaresLength = coveredSquares.length;
 		for (var i = 0; i < coveredSquaresLength; i++) {
@@ -30,8 +30,8 @@ export default class Knight {
 		return targets;
 	}
 
-	static GetCoveringSquares(board: Board, square: number): Array<number> {
-		let targets: Array<number> = [];
+	static GetCoveringSquares(board: Board, square: number): number[] {
+		let targets: number[] = [];
 
 		for (var sign = 0; sign < 2; sign++) {
 			for (var i = 0; i < 4; i++) {

@@ -6,8 +6,8 @@ import Moves from './interfaces/Moves';
 import Coordinates from './interfaces/Coordinates';
 
 export default class Board implements Moves {
-	moves: Array<Move>;
-	squares: Array<number>;
+	moves: Move[];
+	squares: number[];
 	whiteToMove: boolean;
 	enPassant: number;
 	halfmoveClock: number;
@@ -26,9 +26,9 @@ export default class Board implements Moves {
 
 	moveGen: MoveGenerator;
 
-	static readonly startposFEN: string = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
-	static readonly fileNames: string = 'abcdefgh';
-	static readonly rankNames: string = '87654321'; // revers direction because FEN starts at a8
+	static readonly startposFEN = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
+	static readonly fileNames = 'abcdefgh';
+	static readonly rankNames = '87654321'; // revers direction because FEN starts at a8
 
 	// Board.coord.a8 = 0 ... Board.coord.h1 = 63;
 	static readonly coord: Coordinates = (function(): Coordinates {
@@ -43,8 +43,7 @@ export default class Board implements Moves {
 
 	constructor() {
 		this.moves = [];
-		this.squares = new Array(64);
-		this.squares.fill(null);
+		this.squares = (new Array(64)).fill(null);
 		this.whiteToMove = true;
 		this.enPassant = -1;
 		this.halfmoveClock = 0;
@@ -123,8 +122,8 @@ export default class Board implements Moves {
 			throw new Error('Invalid FEN: Invalid number of rows!');
 		}
 
-		const rowCountReference: number = parseInt(rowsReference[2][0]);
-		const fileCountReference: number = rowsReference[1][0].length;
+		const rowCountReference = parseInt(rowsReference[2][0]);
+		const fileCountReference = rowsReference[1][0].length;
 		let fileCount: number;
 
 		if (sections[1][0].match(/[^w|b]/)) {
@@ -219,11 +218,11 @@ export default class Board implements Moves {
 	}
 
 	toFEN(): string {
-		let FEN: string = '';
-		let nextOffset: number = 0;
-		let lastFile: boolean = false;
+		let FEN = '';
+		let nextOffset = 0;
+		let lastFile = false;
 
-		for (let i: number = 0; i <= this.squares.length; i++) {
+		for (let i = 0; i <= this.squares.length; i++) {
 			lastFile = !((i + 1) % 8);
 
 			if (!this.squares[i]) {
@@ -247,11 +246,11 @@ export default class Board implements Moves {
 		}
 
 		// remove the last '/'
-		FEN = FEN.substr(0, FEN.length - 1);
+		FEN = FEN.slice(0, FEN.length - 1);
 
 		FEN += this.whiteToMove ? ' w ' : ' b ';
 
-		let castlingRights: string = '';
+		let castlingRights = '';
 		if (this.castlingRights.white.kingSide) {
 			castlingRights += 'K';
 		}

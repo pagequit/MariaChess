@@ -3,7 +3,7 @@ import Game from './Game';
 
 export default class MariaChess {
 	api: API;
-	games: Map<string, Game>; // shuld be a collection or map
+	games: Map<string, Game>;
 
 	constructor() {
 		this.games = new Map();

@@ -28,7 +28,7 @@ export default abstract class Piece {
 	}
 
 	static GetPrinable(piece: number): string {
-		const printableType: string = Piece.PrintableMap[Piece.GetType(piece)];
+		const printableType = Piece.PrintableMap[Piece.GetType(piece)];
 
 		return Piece.GetColor(piece) & 8
 			? printableType.toLocaleUpperCase()
