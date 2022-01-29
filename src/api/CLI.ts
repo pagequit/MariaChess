@@ -1,4 +1,5 @@
-import { ReadLine } from 'node:readline';
+import { ReadLine, createInterface } from 'node:readline';
+import { randomBytes } from 'node:crypto';
 import API from './API';
 import Board from '../Board';
 
@@ -13,7 +14,7 @@ export default class CLI {
 	id: string;
 
 	constructor(api: API) {
-		this.rl = require('readline').createInterface({
+		this.rl = createInterface({
 			input: process.stdin,
 			output: process.stdout,
 		});
@@ -25,7 +26,7 @@ export default class CLI {
 			printMoves: this.printMoves.bind(this),
 		}
 
-		this.id = require('crypto').randomBytes(4).toString('hex');
+		this.id = randomBytes(8).toString('hex');
 		this.api = api;
 	}
 
@@ -33,9 +34,9 @@ export default class CLI {
 		this.rl.on('line', this.parseMessage.bind(this));
 	}
 
-	parseAction(message: string): Promise<Array<string>> {
+	parseAction(message: string): Promise<string[]> {
 		return new Promise((resolve, reject) => {
-			const messageChunks: Array<string> = message.split(/\s+/g);
+			const messageChunks = message.split(/\s+/g);
 
 			typeof this.actions[messageChunks[0]] === 'function'
 				? resolve(messageChunks)
@@ -45,7 +46,7 @@ export default class CLI {
 
 	parseMessage(message: string): void {
 		this.parseAction(message).then(messageChunks => {
-			const action: string = messageChunks.shift();
+			const action = messageChunks.shift();
 			this.actions[action](messageChunks);
 		}).catch(error => {
 			console.error(error);
@@ -56,21 +57,21 @@ export default class CLI {
 		this.rl.close();
 	}
 
-	newGame(args: Array<string>): void {
+	newGame(args: string[]): void {
 		const FEN: string = args.join(' ');
 		this.api.emit('newGame', this.id, FEN);
 	}
 
-	nextMove(args: Array<string>): void {
-		const move: string = args[0];
+	nextMove(args: string[]): void {
+		const move = args[0];
 		this.api.emit('nextMove', this.id, move);
 	}
 
 	printMoves(): void {
-		const board: Board = this.api.maria.games.get(this.id).board;
+		const board = this.api.maria.games.get(this.id).board;
 
-		board.getMoves().forEach((move: number) => {
-			console.log(Board.SquareToAlgebraic(move));
+		board.moveGen.getSimpleMoves().forEach((move) => {
+			console.log(Board.SquareToAlgebraic(move.from) + Board.SquareToAlgebraic(move.to));
 		});
 	}
 }

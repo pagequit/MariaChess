@@ -9,6 +9,8 @@ export default class Move implements Moves {
 	to: string;
 	isCapture: boolean;
 	isEnPassant: boolean;
+	isCastlingQueenSide: boolean;
+	isCastlingKingSide: boolean;
 	captureSquare: number;
 	capturePiece: number;
 	isPromotion: boolean;

@@ -1,11 +1,10 @@
+import * as Events from 'node:events';
 import MariaChess from '../MariaChess';
 import CLI from './CLI';
 import LichessAPI from './LichessAPI';
 import Board from '../Board';
 import Game from '../Game';
 import Move from '../Move';
-
-const Events = require('events');
 
 /*
  * TODO: think about

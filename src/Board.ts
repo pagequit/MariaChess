@@ -6,8 +6,8 @@ import Moves from './interfaces/Moves';
 import Coordinates from './interfaces/Coordinates';
 
 export default class Board implements Moves {
-	moves: Array<Move>;
-	squares: Array<number>;
+	moves: Move[];
+	squares: number[];
 	whiteToMove: boolean;
 	enPassant: number;
 	halfmoveClock: number;
@@ -21,12 +21,15 @@ export default class Board implements Moves {
 		black: Map<number, number>,
 	}
 
-	private moveGen: MoveGenerator;
-	readonly getMoves: Function;
+	whiteKingPos: number;
+	blackKingPos: number;
 
-	static readonly startposFEN: string = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
-	static readonly fileNames: string = 'abcdefgh';
-	static readonly rankNames: string = '87654321'; // revers direction makes things easier because FEN starts at a8
+	moveGen: MoveGenerator;
+
+	static readonly startposFEN = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
+	static readonly fileNames = 'abcdefgh';
+	static readonly rankNames = '87654321'; // revers direction because FEN starts at a8
+
 	// Board.coord.a8 = 0 ... Board.coord.h1 = 63;
 	static readonly coord: Coordinates = (function(): Coordinates {
 		const coord: Coordinates = {};
@@ -40,7 +43,7 @@ export default class Board implements Moves {
 
 	constructor() {
 		this.moves = [];
-		this.squares = new Array(64);
+		this.squares = (new Array(64)).fill(null);
 		this.whiteToMove = true;
 		this.enPassant = -1;
 		this.halfmoveClock = 0;
@@ -55,7 +58,6 @@ export default class Board implements Moves {
 		}
 
 		this.moveGen = new MoveGenerator(this);
-		this.getMoves = this.moveGen.getMoves.bind(this.moveGen);
 	}
 
 	static SquareToAlgebraic(square: number): string {
@@ -65,6 +67,22 @@ export default class Board implements Moves {
 		return algebraic;
 	}
 
+	static getOffsetLeft(square: number): number {
+		return -(square % 8);
+	}
+
+	static getOffsetRight(square: number): number {
+		return Board.getOffsetLeft(square) - 1 + 8;
+	}
+
+	static getOffsetBottom(square: number): number {
+		return Math.floor((63 - square) / 8);
+	}
+
+	static getOffsetTop(square: number): number {
+		return Board.getOffsetBottom(square) + 1 - 8;
+	}
+
 	get activeColor(): number {
 		return this.whiteToMove
 			? Piece.White
@@ -72,7 +90,7 @@ export default class Board implements Moves {
 	}
 
 	applyMove(move: Move) {
-		this.squares[Board.coord[move.from]] = undefined;
+		this.squares[Board.coord[move.from]] = null;
 		this.squares[Board.coord[move.to]] = move.piece;
 		this.whiteToMove = move.whiteToMove;
 		this.enPassant = move.enPassant;
@@ -104,8 +122,8 @@ export default class Board implements Moves {
 			throw new Error('Invalid FEN: Invalid number of rows!');
 		}
 
-		const rowCountReference: number = parseInt(rowsReference[2][0]);
-		const fileCountReference: number = rowsReference[1][0].length;
+		const rowCountReference = parseInt(rowsReference[2][0]);
+		const fileCountReference = rowsReference[1][0].length;
 		let fileCount: number;
 
 		if (sections[1][0].match(/[^w|b]/)) {
@@ -133,6 +151,7 @@ export default class Board implements Moves {
 		}
 
 		this.squares = new Array(64);
+		this.squares.fill(null);
 		for (let rowCount: number = 0; rowCount < rowCountReference; rowCount++) {
 			fileCount = 0;
 			for (let char of rows[rowCount][0]) {
@@ -180,21 +199,30 @@ export default class Board implements Moves {
 		this.halfmoveClock = parseInt(sections[4][0]);
 		this.fullmoveNumber = parseInt(sections[5][0]);
 
+		this.pieces.white.clear();
+		this.pieces.black.clear();
 		for (let i = 0; i < this.squares.length; i++) {
-			Piece.GetColor(this.squares[i]) === Piece.White
-				&& this.pieces.white.set(i, this.squares[i]);
-
-			Piece.GetColor(this.squares[i]) === Piece.Black
-				&& this.pieces.black.set(i, this.squares[i]);
+			if (Piece.GetColor(this.squares[i]) === Piece.White) {
+				this.pieces.white.set(i, this.squares[i]);
+				if (Piece.GetType(this.squares[i]) === 6) {
+					this.whiteKingPos = i;
+				}
+			}
+			else if (Piece.GetColor(this.squares[i]) === Piece.Black) {
+				this.pieces.black.set(i, this.squares[i]);
+				if (Piece.GetType(this.squares[i]) === 6) {
+					this.blackKingPos = i;
+				}
+			}
 		}
 	}
 
 	toFEN(): string {
-		let FEN: string = '';
-		let nextOffset: number = 0;
-		let lastFile: boolean = false;
+		let FEN = '';
+		let nextOffset = 0;
+		let lastFile = false;
 
-		for (let i: number = 0; i <= this.squares.length; i++) {
+		for (let i = 0; i <= this.squares.length; i++) {
 			lastFile = !((i + 1) % 8);
 
 			if (!this.squares[i]) {
@@ -218,11 +246,11 @@ export default class Board implements Moves {
 		}
 
 		// remove the last '/'
-		FEN = FEN.substr(0, FEN.length - 1);
+		FEN = FEN.slice(0, FEN.length - 1);
 
 		FEN += this.whiteToMove ? ' w ' : ' b ';
 
-		let castlingRights: string = '';
+		let castlingRights = '';
 		if (this.castlingRights.white.kingSide) {
 			castlingRights += 'K';
 		}

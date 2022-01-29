@@ -3,8 +3,8 @@ import Move from "./Move";
 
 export default class Game {
 	board: Board;
-	data: any;
-	moves: Array<Move>;
+	data: any; // TODO: specify
+	moves: Move[];
 
 	constructor(board: Board, data: any) {
 		this.board = board;

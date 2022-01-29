@@ -10,13 +10,13 @@ export default abstract class Piece {
 	static White: number	=  8;
 	static Black: number	= 16;
 
-	static readonly printableMap: any = {
-		[1]: 'p',
-		[2]: 'n',
-		[3]: 'b',
-		[4]: 'r',
-		[5]: 'q',
-		[6]: 'k',
+	static PrintableMap: any = {
+		[Piece.Pawn]:		'p',
+		[Piece.Knight]:	'n',
+		[Piece.Bishop]:	'b',
+		[Piece.Rook]:		'r',
+		[Piece.Queen]:	'q',
+		[Piece.King]:		'k',
 	};
 
 	static GetColor(piece: number): number {
@@ -28,7 +28,7 @@ export default abstract class Piece {
 	}
 
 	static GetPrinable(piece: number): string {
-		let printableType: string = Piece.printableMap[Piece.GetType(piece)];
+		const printableType = Piece.PrintableMap[Piece.GetType(piece)];
 
 		return Piece.GetColor(piece) & 8
 			? printableType.toLocaleUpperCase()
