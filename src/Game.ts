@@ -1,5 +1,5 @@
-import Board from "./Board";
-import Move from "./Move";
+import Board from './Board';
+import Move from './Move';
 
 export default class Game {
 	board: Board;
@@ -12,7 +12,7 @@ export default class Game {
 		this.moves = [];
 	}
 
-	toPGN(): String {
+	toPGN(): string {
 		return 'PGN';
 	}
 }

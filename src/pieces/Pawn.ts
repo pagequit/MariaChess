@@ -1,12 +1,12 @@
-import Board from "../Board";
-import Piece from "../Piece";
-import SimpleMoves from "../interfaces/SimpleMoves";
+import Board from '../Board';
+import Piece from '../Piece';
+import SimpleMoves from '../interfaces/SimpleMoves';
 
 export default class Pawn {
 	static Calc: any = {
 		['+']: (a: number, b: number) => a + b,
 		['-']: (a: number, b: number) => a - b,
-	}
+	};
 
 	static GetSign(board: Board) {
 		return board.activeColor === Piece.White ? '-' : '+';
@@ -30,7 +30,7 @@ export default class Pawn {
 			Pawn.Calc[sign](square, 7) === board.enPassant
 				&& targets.push({ from: square, to: Pawn.Calc[sign](square, 7) });
 
-				Pawn.Calc[sign](square, 9) === board.enPassant
+			Pawn.Calc[sign](square, 9) === board.enPassant
 				&& targets.push({ from: square, to: Pawn.Calc[sign](square, 9) });
 		}
 

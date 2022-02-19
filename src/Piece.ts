@@ -1,14 +1,14 @@
 
 export default abstract class Piece {
-	static Pawn: number		=  1;
-	static Knight: number	=  2;
-	static Bishop: number	=  3;
-	static Rook: number		=  4;
-	static Queen: number	=  5;
-	static King: number		=  6;
+	static Pawn		=  1;
+	static Knight	=  2;
+	static Bishop	=  3;
+	static Rook		=  4;
+	static Queen	=  5;
+	static King		=  6;
 
-	static White: number	=  8;
-	static Black: number	= 16;
+	static White	=  8;
+	static Black	= 16;
 
 	static PrintableMap: any = {
 		[Piece.Pawn]:		'p',

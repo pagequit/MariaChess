@@ -54,7 +54,7 @@ export default class API extends Events {
 	nextMove(gameId: string, move: string) {
 		const board = this.maria.games.get(gameId).board;
 
-		board.applyMove(new Move(board, move))
+		board.applyMove(new Move(board, move));
 
 		console.log(board.toFEN());
 	}

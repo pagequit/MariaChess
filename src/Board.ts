@@ -19,7 +19,7 @@ export default class Board implements Moves {
 	pieces: {
 		white: Map<number, number>,
 		black: Map<number, number>,
-	}
+	};
 
 	whiteKingPos: number;
 	blackKingPos: number;
@@ -55,7 +55,7 @@ export default class Board implements Moves {
 		this.pieces = {
 			white: new Map(),
 			black: new Map(),
-		}
+		};
 
 		this.moveGen = new MoveGenerator(this);
 	}
@@ -152,12 +152,12 @@ export default class Board implements Moves {
 
 		this.squares = new Array(64);
 		this.squares.fill(null);
-		for (let rowCount: number = 0; rowCount < rowCountReference; rowCount++) {
+		for (let rowCount = 0; rowCount < rowCountReference; rowCount++) {
 			fileCount = 0;
-			for (let char of rows[rowCount][0]) {
+			for (const char of rows[rowCount][0]) {
 				if (isNaN(parseInt(char))) {
-					let index = fileCount + (rowCount * rowCountReference);
-					let transChar = char.toLowerCase();
+					const index = fileCount + (rowCount * rowCountReference);
+					const transChar = char.toLowerCase();
 
 					this.squares[index] = transChar === char
 						? Piece.Black

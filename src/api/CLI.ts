@@ -24,7 +24,7 @@ export default class CLI {
 			newGame: this.newGame.bind(this),
 			nextMove: this.nextMove.bind(this),
 			printMoves: this.printMoves.bind(this),
-		}
+		};
 
 		this.id = randomBytes(8).toString('hex');
 		this.api = api;
