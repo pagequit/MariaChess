@@ -4,7 +4,7 @@ import API from './API';
 import Board from '../Board';
 
 interface Actions {
-	[name: string]: Function,
+	[name: string]: (args: string[]) => void,
 }
 
 export default class CLI {

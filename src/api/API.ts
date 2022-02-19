@@ -1,7 +1,6 @@
 import * as Events from 'node:events';
 import MariaChess from '../MariaChess';
 import CLI from './CLI';
-import LichessAPI from './LichessAPI';
 import Board from '../Board';
 import Game from '../Game';
 import Move from '../Move';
@@ -16,13 +15,11 @@ import Move from '../Move';
 export default class API extends Events {
 	maria: MariaChess;
 	cli: CLI;
-	lichessAPI: LichessAPI;
 
 	constructor(maria: MariaChess) {
 		super();
 		this.maria = maria;
 		this.cli = new CLI(this);
-		this.lichessAPI = new LichessAPI();
 	}
 
 	mount() {
@@ -64,22 +61,22 @@ export default class API extends Events {
 	}
 
 	offerDraw(gameId: string) {
-
+		// TODO
 	}
 
 	acceptDraw(gameId: string) {
-
+		// TODO
 	}
 
 	declineDraw(gameId: string) {
-
+		// TODO
 	}
 
 	resignGame(gameId: string) {
-
+		// TODO
 	}
 
 	abortGame(gameId: string) {
-
+		// TODO
 	}
 }
