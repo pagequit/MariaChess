@@ -3,12 +3,12 @@ import Piece from '../Piece';
 import SimpleMoves from '../interfaces/SimpleMoves';
 
 export default class Pawn {
-	static Calc: any = {
-		['+']: (a: number, b: number) => a + b,
-		['-']: (a: number, b: number) => a - b,
+	static Calc = {
+		['+']: (a: number, b: number): number => a + b,
+		['-']: (a: number, b: number): number => a - b,
 	};
 
-	static GetSign(board: Board) {
+	static GetSign(board: Board): '+' | '-' {
 		return board.activeColor === Piece.White ? '-' : '+';
 	}
 

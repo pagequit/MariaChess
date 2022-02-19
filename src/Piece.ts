@@ -1,3 +1,5 @@
+import Board from './Board';
+import SimpleMoves from './interfaces/SimpleMoves';
 
 export default abstract class Piece {
 	static Pawn		=  1;
@@ -10,7 +12,7 @@ export default abstract class Piece {
 	static White	=  8;
 	static Black	= 16;
 
-	static PrintableMap: any = {
+	static PrintableMap = {
 		[Piece.Pawn]:		'p',
 		[Piece.Knight]:	'n',
 		[Piece.Bishop]:	'b',
@@ -34,4 +36,9 @@ export default abstract class Piece {
 			? printableType.toLocaleUpperCase()
 			: printableType;
 	}
+}
+
+export interface IPiece {
+	GetCoveringSquares(board: Board, square: number): number[];
+	GetSimpleMoves(board: Board, square: number): SimpleMoves[];
 }

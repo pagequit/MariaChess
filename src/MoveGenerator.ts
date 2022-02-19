@@ -9,20 +9,22 @@ import Rook from './pieces/Rook';
 import Queen from './pieces/Queen';
 import King from './pieces/King';
 
+const classMap = {
+	[Piece.Pawn]: Pawn,
+	[Piece.Knight]: Knight,
+	[Piece.Bishop]: Bishop,
+	[Piece.Rook]: Rook,
+	[Piece.Queen]: Queen,
+	[Piece.King]: King,
+};
+
 export default class MoveGenerator {
 	board: Board;
-	classMap: any; // TODO: specify
+	classMap: typeof classMap;
 
 	constructor(board: Board) {
 		this.board = board;
-		this.classMap = {
-			[Piece.Pawn]: Pawn,
-			[Piece.Knight]: Knight,
-			[Piece.Bishop]: Bishop,
-			[Piece.Rook]: Rook,
-			[Piece.Queen]: Queen,
-			[Piece.King]: King,
-		};
+		this.classMap = classMap;
 	}
 
 	getCoveredSquaresFrom(square: number): number[] {

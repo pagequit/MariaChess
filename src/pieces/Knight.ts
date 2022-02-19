@@ -4,14 +4,10 @@ import SimpleMoves from '../interfaces/SimpleMoves';
 
 export default class Knight {
 	static Squares = [17, 15, 10, 6];
-	static Calc: any = { // TODO: specify
-		0: (a: number, b: number) => a + b,
-		1: (a: number, b: number) => a - b,
-	};
-
-	static GetSign(board: Board) {
-		return board.activeColor === Piece.White ? '-' : '+';
-	}
+	static Calc = [
+		(a: number, b: number): number => a + b,
+		(a: number, b: number): number => a - b,
+	];
 
 	static GetSimpleMoves(board: Board, square: number): SimpleMoves[] {
 		let targets: SimpleMoves[] = [];
